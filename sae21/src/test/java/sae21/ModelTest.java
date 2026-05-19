@@ -1,4 +1,4 @@
-package model;
+package sae21;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,7 +39,7 @@ public class ModelTest {
         assertEquals(state2, model.getCurrentState());
     }
 
-    @Test
+    @Test 
     void testMovesFromReturnsNull() {
 
         Model model = new Model(new FakeState());
