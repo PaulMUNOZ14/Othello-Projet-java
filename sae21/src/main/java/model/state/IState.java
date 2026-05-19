@@ -6,10 +6,11 @@ import java.util.Set;
 
 import hexagonalCoordinate.Coordinate;
 import model.Team;
+import model.action.*;
 
 public interface IState {
-	//public IState move(Move move);
-	//public IState removeLine(RemoveLine removeLine);
+	public IState move(Move move);
+	public IState removeLine(RemoveLine removeLine);
 	public Set<Coordinate> availableMoves(Coordinate from);
 	//public Map<Coordinate, Token> board();
 	public Map<Team, List<Coordinate>> rings();
