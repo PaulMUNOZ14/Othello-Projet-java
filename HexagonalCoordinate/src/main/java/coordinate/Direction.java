@@ -1,4 +1,4 @@
-package hexagonalCoordinate;
+package coordinate;
 
 /**
  * 

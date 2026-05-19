@@ -1,4 +1,4 @@
-package hexagonalCoordinate;
+package coordinate;
 
 import java.security.InvalidParameterException;
 import java.util.*;

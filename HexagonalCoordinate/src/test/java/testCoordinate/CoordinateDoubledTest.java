@@ -1,10 +1,14 @@
-package test.java.hexagonalCoordinate;
+package testCoordinate;
 
 import static org.junit.jupiter.api.Assertions.*;
 import java.security.InvalidParameterException;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import hexagonalCoordinate.*;
+
+import coordinate.Coordinate;
+import coordinate.CoordinateDoubled;
+import coordinate.Mode;
+import coordinate.*;
 
 public class CoordinateDoubledTest {
 
