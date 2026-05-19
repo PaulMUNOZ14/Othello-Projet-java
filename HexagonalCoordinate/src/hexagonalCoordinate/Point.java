@@ -3,30 +3,9 @@ package hexagonalCoordinate;
 /**
  * 
  */
-public class Point {
-
-    /**
-     * Default constructor
-     */
-    public Point() {
-    }
-
-    /**
-     * 
-     */
-    public int x;
-
-    /**
-     * 
-     */
-    public int y;
-
-    /**
-     * @return
-     */
+public record Point(int x, int y) {
+    @Override
     public String toString() {
-        // TODO implement here
-        return "";
+        return "[" + x + ", " + y + "]";
     }
-
-}
+} 

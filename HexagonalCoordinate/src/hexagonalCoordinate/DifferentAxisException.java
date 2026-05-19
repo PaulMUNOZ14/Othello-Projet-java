@@ -3,13 +3,12 @@ package hexagonalCoordinate;
 /**
  * 
  */
-public class DifferentAxisException {
+public class DifferentAxisException extends Exception {
 
-    /**
-     * @param s
-     */
-    public DifferentAxisException(String s) {
-        // TODO implement here
+	private static final long serialVersionUID = 2938167910374051317L;
+
+	public DifferentAxisException(String s) {
+        super(s);
     }
 
 }

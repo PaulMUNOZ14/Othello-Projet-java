@@ -1,125 +1,92 @@
 package hexagonalCoordinate;
 
+import java.security.InvalidParameterException;
 import java.util.*;
 
 /**
  * 
  */
-public class Coordinate {
+public abstract class Coordinate {
 
-    /**
-     * Default constructor
-     */
-    public Coordinate() {
-    }
+	public Coordinate() {
+	}
+	
 
-    /**
-     * @return
-     */
-    public Point to2DCoordinate() {
-        // TODO implement here
-        return null;
-    }
-
-    /**
-     * @param mode 
-     * @param direction 
-     * @return
-     */
-    public Coordinate toDir(Mode mode, Direction direction) {
-        // TODO implement here
-        return null;
-    }
-
+    public abstract Point to2DCoordinate();
+    public abstract Coordinate toDir(Mode mode, Direction direction);
+    public abstract List<Coordinate> between(Mode mode, Coordinate to) throws DifferentAxisException;
+    
     /**
      * @param mode 
      * @return
      */
     public List<Coordinate> getNeighbors(Mode mode) {
-        // TODO implement here
-        return null;
+        List<Coordinate> neighbors = new ArrayList<>();
+        Direction[] dirs;
+        
+        if (mode == Mode.POINTY) {
+        	dirs = new Direction[] {
+        			Direction.NO,
+        			Direction.NE,
+        			Direction.E,
+        			Direction.SE,
+        			Direction.SO,
+        			Direction.O
+        	};
+        } else {
+        	dirs = new Direction[] {
+        			Direction.NO,
+        			Direction.N,
+        			Direction.NE,
+        			Direction.SE,
+        			Direction.S,
+        			Direction.SO
+        	};
+        }
+        
+        for (Direction d : dirs) {
+        	neighbors.add(this.toDir(mode, d));
+        }
+        return neighbors;
     }
-
-    /**
-     * @param mode 
-     * @param to 
-     * @return
-     */
-    public List<Coordinate> between(Mode mode, Coordinate to) {
-        // TODO implement here
-        return null;
+    
+    private Coordinate checkAndMove(Mode mode, Direction dir, Mode forbiddenMode, String dirName) {
+    	if (mode == forbiddenMode) {
+    		throw new InvalidParameterException(dirName + " n'accepte pas le mode " + forbiddenMode);
+    	}
+    	return toDir(mode, dir);
     }
-
-    /**
-     * @param mode 
-     * @return
-     */
+    
     public Coordinate NO(Mode mode) {
-        // TODO implement here
-        return null;
+        return toDir(mode, Direction.NO);
     }
 
-    /**
-     * @param mode 
-     * @return
-     */
     public Coordinate NE(Mode mode) {
-        // TODO implement here
-        return null;
+    	return toDir(mode, Direction.NE);
     }
 
-    /**
-     * @param mode 
-     * @return
-     */
     public Coordinate E(Mode mode) {
-        // TODO implement here
-        return null;
+    	return checkAndMove(mode, Direction.E, Mode.FLAT, "E");
     }
 
-    /**
-     * @param mode 
-     * @return
-     */
     public Coordinate O(Mode mode) {
-        // TODO implement here
-        return null;
+    	return checkAndMove(mode, Direction.O, Mode.FLAT, "O");
     }
 
-    /**
-     * @param mode 
-     * @return
-     */
     public Coordinate N(Mode mode) {
-        // TODO implement here
-        return null;
+    	return checkAndMove(mode, Direction.N, Mode.POINTY, "N");
     }
 
-    /**
-     * @param mode 
-     * @return
-     */
     public Coordinate S(Mode mode) {
-        // TODO implement here
-        return null;
+    	return checkAndMove(mode, Direction.S, Mode.POINTY, "S");
     }
 
-    /**
-     * @param mode 
-     * @return
-     */
     public Coordinate SO(Mode mode) {
-        // TODO implement here
-        return null;
+    	return toDir(mode, Direction.SO);
     }
 
-    /**
-     * @param mode 
-     * @return
-     */
     public Coordinate SE(Mode mode) {
-        // TODO implement here
-        return null;
+    	return toDir(mode, Direction.SE);
     }
 
 }

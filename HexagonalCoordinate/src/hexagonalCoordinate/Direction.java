@@ -18,8 +18,16 @@ public enum Direction {
      * @return
      */
     public Direction opposite() {
-        // TODO implement here
-        return null;
+        return switch (this) {
+        	case NO -> SE;
+        	case N -> S;
+        	case NE -> SO;
+        	case E -> O;
+        	case SE -> NO;
+        	case S -> N;
+        	case SO -> NE;
+        	case O -> E;
+        };
     }
 
 }
