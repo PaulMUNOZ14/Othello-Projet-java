@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.management.RuntimeErrorException;
+
 import coordinate.Coordinate;
 import coordinate.DifferentAxisException;
 import coordinate.Mode;
@@ -34,7 +36,7 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 
 	@Override
 	public IState removeLine(RemoveLine removeLine) {
-		// TODO Auto-generated method stub
+		if (removeLine.getLine().size() != 5) throw new RuntimeErrorException(null, "taille de ligne impossible : " + removeLine.getLine().size());
 		return null;
 	}
 
