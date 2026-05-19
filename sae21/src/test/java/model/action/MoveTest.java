@@ -2,7 +2,7 @@ package model.action;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import hexagonalCoordinate.Coordinate;
+import coordinate.Coordinate;
 
 public class MoveTest {
 
