@@ -14,9 +14,9 @@
   <dependencies> 
         
         <dependency>
-            <groupId>groupe9</groupId>
-            <artifactId>HexagonalCoordinate</artifactId>
-            <version>1.0-SNAPSHOT</version>
+			<groupId>groupe9</groupId>
+			<artifactId>HexagonalCoordinate</artifactId>
+			<version>1.0-SNAPSHOT</version>
         </dependency>
 
     </dependencies>
