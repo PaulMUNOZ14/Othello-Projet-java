@@ -153,11 +153,57 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	
+	
+	
+	
+	/**
+	 * RemoveToken
+	 * Crée un nouvel état en supprimant le jeton situé à la coordonnée indiquée.
+	 * Respecte l'immuabilité en clonant le plateau avant d'effectuer la suppression.
+	 * * @param coordinate La coordonnée de la case à vider.
+	 * @return Une nouvelle instance de State avec le plateau mis à jour.
+	 */
 	public State removeToken(Coordinate coordinate) {
 	    Map<Coordinate, Token> new_board = new HashMap<>(this.board);
 	    new_board.remove(coordinate);
 	    return new State(new_board, this.turn, this.lines);
 	}
 	
+	
+	
+	/**
+	 * ToggleToken
+	 * Ajoute ou supprime dynamiquement un jeton sur le plateau via la réflexion Java.
+	 * Si un jeton de la même classe et de la même équipe est déjà présent sur la case, il est retiré.
+	 * Sinon, un nouveau jeton est instancié à la volée et placé sur le plateau.
+	 * * @param coordinate La coordonnée cible sur le plateau.
+	 * @param tokenClass La classe du jeton à créer (ex: Pawn.class ou Ring.class).
+	 * @param team L'équipe (Team) à assigner au jeton.
+	 * @return Une nouvelle instance de State avec le plateau mis à jour.
+	 * @throws RuntimeException Si la génération de l'instance par réflexion échoue.
+	 */
+	
+	public State toggleToken(Coordinate coordinate, Class<? extends Token> tokenClass, Team team) {
+	    try {
+	        java.lang.reflect.Constructor<?> constructor = tokenClass.getConstructors()[0];
+	        Token newToken = (Token) constructor.newInstance(team);
+	        
+	        Map<Coordinate, Token> new_board = new HashMap<>(this.board);
+	        Token existingToken = new_board.get(coordinate);
+	        
+	        if (existingToken != null && existingToken.getClass().equals(tokenClass) && existingToken.getTeam() == team) {
+	            new_board.remove(coordinate);
+	        } else {
+	            new_board.put(coordinate, newToken);
+	        }
+	        
+	        return new State(new_board, this.turn, this.lines);
+	        
+	    } catch (Exception e) {
+	        throw new RuntimeException("Erreur lors de la création du token par réflexion", e);
+	    }
+	}
 	
 }
