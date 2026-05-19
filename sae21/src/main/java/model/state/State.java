@@ -153,5 +153,11 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 		// TODO Auto-generated method stub
 		return null;
 	}
+	public State removeToken(Coordinate coordinate) {
+	    Map<Coordinate, Token> new_board = new HashMap<>(this.board);
+	    new_board.remove(coordinate);
+	    return new State(new_board, this.turn, this.lines);
+	}
+	
 	
 }
