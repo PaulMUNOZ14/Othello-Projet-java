@@ -11,11 +11,11 @@ public abstract class Token {
     }
     
     public Team getTeam() {
-    	return null;
+    	return team;
     }
     
     public void setTeam(Team team) {
-    	
+    	this.team = team;
     }
     
     public String charRepr() {
