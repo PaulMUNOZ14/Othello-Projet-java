@@ -1,10 +1,10 @@
 package ui;
 
-import model.state
+import model.state.*;
 
 public class CUIMain {
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		State gameState = new State();
 		
 		boolean gameRunning = true;
@@ -32,6 +32,6 @@ public class CUIMain {
 			System.out.println(new String(affichage[i]));
 		}
 		
-	}
+	}*/
 
 }
