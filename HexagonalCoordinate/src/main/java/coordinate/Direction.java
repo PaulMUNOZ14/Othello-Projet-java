@@ -15,7 +15,7 @@ public enum Direction {
 	O;
 
     /**
-     * @return
+     * @return la direction opposée
      */
     public Direction opposite() {
         return switch (this) {

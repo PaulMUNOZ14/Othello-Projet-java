@@ -17,8 +17,10 @@ public abstract class Coordinate {
     public abstract List<Coordinate> between(Mode mode, Coordinate to) throws DifferentAxisException;
     
     /**
-     * @param mode 
-     * @return
+     * Calcule la coordonnée voisine dans une direction donnée.
+     * @param dir La direction du mouvement souhaité.
+     * @return Une nouvelle instance de CoordinateCube représentant le voisin.
+     * @throws IllegalArgumentException si la direction est nulle.
      */
     public List<Coordinate> getNeighbors(Mode mode) {
         List<Coordinate> neighbors = new ArrayList<>();
@@ -50,6 +52,15 @@ public abstract class Coordinate {
         return neighbors;
     }
     
+    /**
+     * Vérifie si un déplacement est possible puis l'effectue
+     * @param mode le mode du plateau
+     * @param dir La direction du mouvement souhaité.
+     * @param forbiddenMode le mode du plateau non accepté
+     * @param dirName le nom de la direction
+     * @return les coordonnées après mouvement
+     * @throws InvalidParameterException si le mode n'est pas bon
+     */
     private Coordinate checkAndMove(Mode mode, Direction dir, Mode forbiddenMode, String dirName) {
     	if (mode == forbiddenMode) {
     		throw new InvalidParameterException(dirName + " n'accepte pas le mode " + forbiddenMode);
@@ -57,6 +68,8 @@ public abstract class Coordinate {
     	return toDir(mode, dir);
     }
     
+    // NO, NE, E, O, N, S, SO, SE permettent de faire un mouvement dans la direction donnée dans le nom de la fonction
+    // N = Nord, S = Sud, O = Ouest, E = Est, NO = Nord-Ouest, NE = Nord-Est, SO = Sud-Ouest & SE = Sud-Est
     public Coordinate NO(Mode mode) {
         return toDir(mode, Direction.NO);
     }

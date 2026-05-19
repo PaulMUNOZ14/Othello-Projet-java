@@ -3,28 +3,36 @@ package coordinate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 
- */
 public class CoordinateDoubled extends Coordinate {
 	
     private int y;
     private int x;
 
-	/**
-     * @param y 
-     * @param x
+    /**
+     * Constructeur
+     * @param y Coordonnée y
+     * @param x Coordonnée x
      */
     public CoordinateDoubled(int y, int x) {
         this.y = y;
         this.x = x;
     }
 
+    /**
+     * Converti en Coordonnées 2D
+     * @return Les points en 2D
+     */
 	@Override
 	public Point to2DCoordinate() {
 		return new Point(x, y);
 	}
 
+	/**
+     * Effectue un déplacement vers la direction donnée
+     * @param mode mode du plateau
+     * @param direction direction où l'on souhaite aller
+     * @return les coordonnées finales
+     */
 	@Override
 	public Coordinate toDir(Mode mode, Direction direction) {
 		if (mode == Mode.POINTY) {
@@ -50,6 +58,13 @@ public class CoordinateDoubled extends Coordinate {
         }
 	}
 
+	
+	/**
+     * Affiche ce qu'il se trouve entre 2 points
+     * @param mode mode du plateau
+     * @param to 2ème coordonnée pour vérifier ce qu'il y a entre
+     * @return la liste des coordonnées entre les 2 points
+     */
 	@Override
 	public List<Coordinate> between(Mode mode, Coordinate to) throws DifferentAxisException {
 		if (!(to instanceof CoordinateDoubled target)) throw new DifferentAxisException("Type incompatible.");

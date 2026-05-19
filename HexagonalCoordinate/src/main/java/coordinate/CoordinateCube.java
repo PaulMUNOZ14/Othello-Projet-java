@@ -10,9 +10,11 @@ public class CoordinateCube extends Coordinate {
     private int s;
 
     /**
-     * @param q 
-     * @param r 
-     * @param s
+     * Constructeur
+     * @param q Coordonnée q
+     * @param r Coordonnée r
+     * @param s Coordonnée s
+     * @throws IllegalArgumentException si la contrainte q + r + s = 0 n'est pas respectée
      */
     public CoordinateCube(int q, int r, int s) {
         if (q + r + s != 0) {
@@ -35,6 +37,10 @@ public class CoordinateCube extends Coordinate {
         return s;
     }
 
+    /**
+     * Converti en Coordonnées 2D
+     * @return Les points en 2D
+     */
 	@Override
 	public Point to2DCoordinate() {
 		int x = 2 * q + r + 9;
@@ -42,6 +48,12 @@ public class CoordinateCube extends Coordinate {
 		return new Point(x, y);
 	}
 
+	/**
+     * Effectue un déplacement vers la direction donnée
+     * @param mode mode du plateau
+     * @param direction direction où l'on souhaite aller
+     * @return les coordonnées finales
+     */
 	@Override
 	public Coordinate toDir(Mode mode, Direction direction) {
 		if (mode == Mode.POINTY) {
@@ -67,6 +79,13 @@ public class CoordinateCube extends Coordinate {
 		}
 	}
 
+	
+	/**
+     * Affiche ce qu'il se trouve entre 2 points
+     * @param mode mode du plateau
+     * @param to 2ème coordonnée pour vérifier ce qu'il y a entre
+     * @return la liste des coordonnées entre les 2 points
+     */
 	@Override
 	public List<Coordinate> between(Mode mode, Coordinate to) throws DifferentAxisException {
 		if (!(to instanceof CoordinateCube target)) throw new DifferentAxisException("Type incompatible.");
