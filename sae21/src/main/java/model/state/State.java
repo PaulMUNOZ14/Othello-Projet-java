@@ -1,18 +1,22 @@
 package model.state;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import hexagonalCoordinate.*;
+import coordinate.Coordinate;
+import coordinate.DifferentAxisException;
+import coordinate.Mode;
 import model.Team;
 import model.action.Move;
 import model.action.RemoveLine;
+import model.tokens.*;
 
 public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate>> lines) implements IState{
 
 	@Override
-	public IState move(Move move) {
+	public IState move(Move move) throws DifferentAxisException {
 		if (!(board.get(move.getFrom()) instanceof Ring)) throw new IllegalArgumentException("Pas d'anneau à l'endroit donné");
 		if (!(board.get(move.getFrom()) instanceof Token)) throw new IllegalArgumentException("Arrivée occupée");
 		List<Coordinate> entre = move.getFrom().between(Mode.POINTY, move.getTo());
@@ -20,11 +24,11 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 			if(board.get(coordinate) instanceof Ring) {
 				throw new IllegalArgumentException("Anneau sur le chemin");
 			}
-			else if(board.get(coordinate) instanceof Ring and coordinate != entre.getLast()) {
+			else if(board.get(coordinate) instanceof Ring && coordinate != entre.get(entre.size()-1)) {
 				throw new IllegalArgumentException("Pion sur le chemin");
 			}
 		}
-		Map<Coordinate, Token> new_board = new Map<Coordinate, Token>(board);
+		Map<Coordinate, Token> new_board = new HashMap<Coordinate, Token>(board);
 		return new State(new_board, turn, lines); //peut être faire passer le tour
 	}
 

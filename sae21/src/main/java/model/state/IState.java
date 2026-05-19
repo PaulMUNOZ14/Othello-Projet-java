@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import hexagonalCoordinate.Coordinate;
+import coordinate.*;
 import model.Team;
 import model.action.*;
 
 public interface IState {
-	public IState move(Move move);
+	public IState move(Move move) throws DifferentAxisException;
 	public IState removeLine(RemoveLine removeLine);
 	public Set<Coordinate> availableMoves(Coordinate from);
 	//public Map<Coordinate, Token> board();
