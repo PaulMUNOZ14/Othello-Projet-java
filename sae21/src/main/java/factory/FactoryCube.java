@@ -1,20 +1,20 @@
 package factory;
 
-import hexagonalCoordinate.Coordinate;
-import hexagonalCoordinate.CoordinateCube;
+import coordinate.Coordinate;
+import coordinate.CoordinateCube;
 import model.state.IState;
 import model.state.State;
 import model.tokens.Pawn;
 import model.tokens.Ring;
 import model.tokens.Token;
-import model.action.Team;
+import model.Team;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Fabrique concrète pour la création de plateaux utilisant les coordonnées cubiques (CoordinateCube).
+ * Fabrique concrète pour la création de plateaux utilisant les coordonnées cubiques.
  */
 public class FactoryCube implements IFactory {
 
@@ -23,41 +23,62 @@ public class FactoryCube implements IFactory {
         return new State(new HashMap<>(), Team.WHITE, List.of());
     }
 
-    /**
-     * Initialise la base du plateau avec les éléments communs à tous les tests.
-     * @return Une Map associant chaque coordonnée à son jeton (Token).
-     */
     private Map<Coordinate, Token> buildBaseBoard() {
-        Map<Coordinate, Token> board = new HashMap<>();
-        // TODO: coordonnées communes
-        return board;
+        return new HashMap<>();
     }
 
     @Override
     public IState stateForWhiteLineTest() {
-        Map<Coordinate, Token> board = buildBaseBoard();
-        // TODO: ligne blanche
-        return new State(board, Team.WHITE, List.of());
+        State s = new State(buildBaseBoard(), Team.WHITE, List.of());
+        
+        s = s.toggleToken(new CoordinateCube(0, 0, 0), Pawn.class, Team.WHITE);
+        s = s.toggleToken(new CoordinateCube(1, -1, 0), Pawn.class, Team.WHITE);
+        s = s.toggleToken(new CoordinateCube(2, -2, 0), Pawn.class, Team.WHITE);
+        s = s.toggleToken(new CoordinateCube(3, -3, 0), Pawn.class, Team.WHITE);
+        s = s.toggleToken(new CoordinateCube(4, -4, 0), Pawn.class, Team.WHITE);
+        
+        return s;
     }
 
     @Override
     public IState stateForBlackLineTest() {
-        Map<Coordinate, Token> board = buildBaseBoard();
-        // TODO: ligne noire
-        return new State(board, Team.BLACK, List.of());
+        State s = new State(buildBaseBoard(), Team.BLACK, List.of());
+        
+        s = s.toggleToken(new CoordinateCube(0, 0, 0), Pawn.class, Team.BLACK);
+        s = s.toggleToken(new CoordinateCube(1, -1, 0), Pawn.class, Team.BLACK);
+        s = s.toggleToken(new CoordinateCube(2, -2, 0), Pawn.class, Team.BLACK);
+        s = s.toggleToken(new CoordinateCube(3, -3, 0), Pawn.class, Team.BLACK);
+        s = s.toggleToken(new CoordinateCube(4, -4, 0), Pawn.class, Team.BLACK);
+        
+        return s;
     }
 
     @Override
     public IState testState() {
-        Map<Coordinate, Token> board = buildBaseBoard();
-        // TODO: état de test global
-        return new State(board, Team.WHITE, List.of());
+        State s = new State(buildBaseBoard(), Team.WHITE, List.of());
+        
+        s = s.toggleToken(new CoordinateCube(0, 0, 0), Ring.class, Team.WHITE);
+        s = s.toggleToken(new CoordinateCube(1, 0, -1), Pawn.class, Team.BLACK);
+        
+        return s;
     }
 
     @Override
     public IState doubleLineStateTest() {
-        Map<Coordinate, Token> board = buildBaseBoard();
-        // TODO: double ligne
-        return new State(board, Team.WHITE, List.of());
+        State s = new State(buildBaseBoard(), Team.WHITE, List.of());
+        
+        s = s.toggleToken(new CoordinateCube(0, 0, 0), Pawn.class, Team.WHITE);
+        s = s.toggleToken(new CoordinateCube(1, -1, 0), Pawn.class, Team.WHITE);
+        s = s.toggleToken(new CoordinateCube(2, -2, 0), Pawn.class, Team.WHITE);
+        s = s.toggleToken(new CoordinateCube(3, -3, 0), Pawn.class, Team.WHITE);
+        s = s.toggleToken(new CoordinateCube(4, -4, 0), Pawn.class, Team.WHITE);
+        
+        s = s.toggleToken(new CoordinateCube(0, 1, -1), Pawn.class, Team.WHITE);
+        s = s.toggleToken(new CoordinateCube(1, 1, -2), Pawn.class, Team.WHITE);
+        s = s.toggleToken(new CoordinateCube(2, 1, -3), Pawn.class, Team.WHITE);
+        s = s.toggleToken(new CoordinateCube(3, 1, -4), Pawn.class, Team.WHITE);
+        s = s.toggleToken(new CoordinateCube(4, 1, -5), Pawn.class, Team.WHITE);
+        
+        return s;
     }
 }
