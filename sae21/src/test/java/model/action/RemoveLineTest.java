@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import java.util.HashSet;
 import java.util.Set;
-import hexagonalCoordinate.Coordinate;
+import coordinate.Coordinate;
 
 public class RemoveLineTest {
 

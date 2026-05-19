@@ -1,7 +1,7 @@
 package model.action;
 
 import java.util.Set;
-import hexagonalCoordinate.Coordinate;
+import coordinate.Coordinate;
 
 public class RemoveLine extends Action {
     
