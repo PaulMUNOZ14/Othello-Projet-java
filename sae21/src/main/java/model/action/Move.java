@@ -1,6 +1,6 @@
 package model.action;
 
-import hexagonalCoordinate.Coordinate;
+import coordinate.Coordinate;
 
 public class Move extends Action {
     
