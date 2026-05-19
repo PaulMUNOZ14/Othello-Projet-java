@@ -1,6 +1,20 @@
 package model;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import coordinate.Coordinate;
+import coordinate.Direction;
+import coordinate.Mode;
+import coordinate.Point;
+import model.tokens.Token;
+
 public class Model {
+
+// git checkout state
+// git pull
+// git merge state	
 
 	private IState currentState;
 
@@ -12,13 +26,13 @@ public class Model {
 		this.currentState = currentState;
 	}
 
-    public Set<Coordinate> movesFrom(Coordinate from) {
-        return null;
-    }
+	public Set<Coordinate> movesFrom(Coordinate from) {
+	    return currentState.movesFrom(from);
+	}
 	
-    public void moveRing(Coordinate from, Coordinate to) {
-    	
-    }
+	public void moveRing(Coordinate from, Coordinate to) {
+	    currentState.moveRing(from, to);
+	}
     
     public List<Set<Coordinate>> getPawnLines () {
     	return null;
@@ -28,8 +42,8 @@ public class Model {
     	
     }
     
-    public Map<Coordinate,Token> getBoard(){
-    	return null;
+    public Map<Coordinate, Token> getBoard() {
+        return currentState.getBoard();
     }
     
     public Token getTokenAt(Coordinate c) {
