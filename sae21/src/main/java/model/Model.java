@@ -41,7 +41,7 @@ public class Model {
     }
     
     public List<Coordinate> getRings(Team team){
-    	return rings;
+    	return null;
     }
     
     public List<Coordinate> getPawn(Team team){
