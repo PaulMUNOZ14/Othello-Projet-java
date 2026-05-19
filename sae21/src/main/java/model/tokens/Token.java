@@ -18,12 +18,8 @@ public abstract class Token {
     	this.team = team;
     }
     
-    public String charRepr() {
-    	return null;
-    }
+    public abstract String charRepr();
     
-    public Token clone() {
-    	return null;
-    }
+    public abstract Token clone();
     
 }

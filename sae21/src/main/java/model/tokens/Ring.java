@@ -8,6 +8,14 @@ public class Ring extends Token{
 		super(color);
 	}
 
-	
+    @Override
+    public Token clone() {
+        return new Ring(team);
+    }
+
+    @Override
+    public String charRepr() {
+        return team == Team.WHITE ? "R" : "R";
+    }
 
 }

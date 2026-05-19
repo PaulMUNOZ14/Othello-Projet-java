@@ -9,11 +9,21 @@ import model.tokens.Token;
 
 public class TestToken {
 
-    static class FakeToken extends Token {
-        public FakeToken(Team team) {
-            super(team);
-        }
-    }
+	static class FakeToken extends Token {
+	    public FakeToken(Team team) {
+	        super(team);
+	    }
+
+	    @Override
+	    public String charRepr() {
+	        return "F";
+	    }
+
+	    @Override
+	    public Token clone() {
+	        return new FakeToken(this.team);
+	    }
+	}
     @Test
     void testConstructor() {
         Token t = new FakeToken(Team.WHITE);
@@ -31,14 +41,16 @@ public class TestToken {
         assertDoesNotThrow(() -> t.setTeam(Team.BLACK));
     }
     @Test
-    void testCharReprReturnsNull() {
+    void testCharRepr() {
         Token t = new FakeToken(Team.WHITE);
-
-        assertNull(t.charRepr());
+        assertEquals("F", t.charRepr());
     }
     @Test
-    void testCloneReturnsNull() {
+    void testClone() {
         Token t = new FakeToken(Team.WHITE);
-        assertNull(t.clone());
+        Token copy = t.clone();
+        assertNotNull(copy);
+        assertEquals(t.getTeam(), copy.getTeam());
+        assertNotSame(t, copy);
     }
 }

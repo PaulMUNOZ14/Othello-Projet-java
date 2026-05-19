@@ -20,9 +20,9 @@ public class TestPawn {
         assertDoesNotThrow(() -> p.changeTeam());
     }
     @Test
-    void testStillSameTeamBecauseNotImplemented() {
+    void testChangeTeam() {
         Pawn p = new Pawn(Team.WHITE);
         p.changeTeam();
-        assertEquals(Team.WHITE, p.getTeam());
+        assertEquals(Team.BLACK, p.getTeam());
     }
 }

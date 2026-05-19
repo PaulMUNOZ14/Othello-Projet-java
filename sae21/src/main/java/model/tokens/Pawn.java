@@ -9,6 +9,20 @@ public class Pawn extends Token{
 	}
 
 	public void changeTeam() {
-		
-	}
+        if (team == Team.WHITE) {
+            team = Team.BLACK;
+        } else {
+            team = Team.WHITE;
+        }
+    }
+
+    @Override
+    public Token clone() {
+        return new Pawn(team);
+    }
+
+    @Override
+    public String charRepr() {
+        return team == Team.WHITE ? "P" : "P";
+    }
 }
