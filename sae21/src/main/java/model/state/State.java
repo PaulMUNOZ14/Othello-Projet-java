@@ -76,4 +76,11 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 		return null;
 	}
 	
+	public boolean isInField(Coordinate c) {
+	    if (c == null) return false;
+	    Map<Coordinate, Token> board = currentState.board();
+	    if (board == null) return false;
+	    return board.containsKey(c);
+	}
+	
 }
