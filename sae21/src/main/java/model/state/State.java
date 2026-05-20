@@ -324,39 +324,34 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	 * @throws RuntimeException Si la génération de l'instance par réflexion échoue.
 	 */
 	
-	@Override
-	public IState toggleToken(Coordinate coordinate, Class<?> tokenClass, Team team) {
-	    try {
-	        java.lang.reflect.Constructor<?> constructor = tokenClass.getConstructors()[0];
-	        Token newToken = (Token) constructor.newInstance(team);
-	        
-	        Map<Coordinate, Token> new_board = new HashMap<>(this.board);
-	        Token existingToken = new_board.get(coordinate);
-	        
-	        if (existingToken != null && existingToken.getClass().equals(tokenClass) && existingToken.getTeam() == team) {
-	            new_board.remove(coordinate);
-	        } else {
-	            new_board.put(coordinate, newToken);
-	        }
-	        
-	        return new State(new_board, this.turn, this.lines);
-	        
-	    } catch (Exception e) {
-	        throw new RuntimeException("Erreur lors de la création du token par réflexion", e);
+
+	public IState toggleToken(Coordinate position, Class<?> token, Team team) {
+	    if (!this.board.containsKey(position)) {
+	        throw new IllegalArgumentException("La coordonnée spécifiée est hors plateau");
 	    }
+
+	    Map<Coordinate, Token> new_board = new HashMap<>(this.board);
+	    Token existingToken = new_board.get(position);
+
+	    Token newToken;
+	    if (token.equals(Pawn.class)) {
+	        newToken = new Pawn(team);
+	    } else if (token.equals(Ring.class)) {
+	        newToken = new Ring(team);
+	    } else {
+	        throw new IllegalArgumentException("Type de token non supporté : " + token.getSimpleName());
+	    }
+
+	    // CORRECTION ICI : Remplacement de 'token' par 'position' comme clé de la Map
+	    if (existingToken != null && existingToken.getClass().equals(token) && existingToken.getTeam() == team) {
+	        new_board.put(position, null); // On retire le jeton en remettant la case à null
+	    } else {
+	        new_board.put(position, newToken); // On place ou remplace par le nouveau jeton
+	    }
+
+	    return new State(new_board, this.turn, this.lines);
 	}
-	
-	public static Map<Coordinate, Token> genereTab(int n){
-		Map<Coordinate, Token> board = new HashMap<Coordinate, Token>();
-		for (int i = -n; i <= n; i++) {
-			for (int j = -n; j <= n; j++) {
-				if(Math.sqrt(i*i+j*j+(-i-j)*(-i-j)) < n) {
-					board.put(new CoordinateCube(i, j, -i-j), null);
-				}
-			}
-		}
-		return board;
-	}
+
 	
 	public boolean isInField(Coordinate c) {
 	    if (c == null) return false;

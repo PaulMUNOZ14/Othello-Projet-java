@@ -14,6 +14,7 @@ import coordinate.Coordinate;
 import coordinate.CoordinateCube;
 import model.Team;
 import model.action.RemoveLine;
+import model.factory.FactoryDoubled;
 import model.state.*;
 import model.tokens.Pawn;
 import model.tokens.Ring;
@@ -34,13 +35,12 @@ class RemoveLineTest {
 
     @BeforeEach
     public void setUp() {
-        // Initialisation d'un plateau vide via ta méthode
-        board = State.genereTab(n);
+    	FactoryDoubled facto = new FactoryDoubled();
+        board = facto.buildBaseBoard(); 
     }
 
     @Test
     public void testRemoveLine_Succes() {
-        // Configuration : On place 5 pions blancs alignés et 1 anneau blanc
         board.put(r1, new Ring(Team.WHITE));
         board.put(p1, new Pawn(Team.WHITE));
         board.put(p2, new Pawn(Team.WHITE));
@@ -105,7 +105,6 @@ class RemoveLineTest {
     @Test
     public void testRemoveLine_Erreur_LigneNonUniforme() {
         board.put(r1, new Ring(Team.WHITE));
-        // Ligne mixte : 4 Blancs et 1 Noir
         board.put(p1, new Pawn(Team.WHITE));
         board.put(p2, new Pawn(Team.WHITE));
         board.put(p3, new Pawn(Team.WHITE));
