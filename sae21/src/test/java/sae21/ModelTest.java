@@ -16,78 +16,17 @@ import coordinate.Coordinate;
 
 public class ModelTest {
 
-	class FakeState implements IState {
-
-	    @Override
-	    public Map<Coordinate, Token> board() {
-	        return Map.of();
-	    }
-
-	    @Override
-	    public Set<Coordinate> availableMoves(Coordinate from) {
-	        return null;
-	    }
-
-	    @Override
-	    public IState move(model.action.Move move) {
-	        return this;
-	    }
-
-	    @Override
-	    public IState removeLine(model.action.RemoveLine removeLine) {
-	        return this;
-	    }
-
-	    @Override
-	    public Map<Team, List<Coordinate>> rings() {
-	        return Map.of();
-	    }
-
-	    @Override
-	    public List<Set<Coordinate>> lines() {
-	        return List.of();
-	    }
-
-	    @Override
-	    public Team turn() {
-	        return null;
-	    }
-
-	    @Override
-	    public List<Set<Coordinate>> getPawnsLines() {
-	        return List.of();
-	    }
-
-		@Override
-		public Team winner() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public IState removeToken(Coordinate c) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public IState toggleToken(Coordinate position, Class<?> token, Team team) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-	}
-
     @Test
     void testConstructor() {
-        IState state = new FakeState();
+        IState state = new State();
         Model model = new Model(state);
         assertEquals(state, model.getCurrentState());
     }
 
     @Test
     void testSetCurrentState() {
-        IState state1 = new FakeState();
-        IState state2 = new FakeState();
+        IState state1 = new State();
+        IState state2 = new State();
         Model model = new Model(state1);
         model.setCurrentState(state2);
         assertEquals(state2, model.getCurrentState());
@@ -95,14 +34,14 @@ public class ModelTest {
 
     @Test
     void testMovesFromReturnsNull() {
-        Model model = new Model(new FakeState());
+        Model model = new Model(new State());
         Set<Coordinate> result = model.movesFrom(null);
         assertNull(result);
     }
 
     @Test
     void testGetPawnLinesReturnsNull() {
-        Model model = new Model(new FakeState());
+        Model model = new Model(new State());
         List<Set<Coordinate>> result = model.getPawnLines();
         assertNotNull(result);
         assertTrue(result.isEmpty());
@@ -110,7 +49,7 @@ public class ModelTest {
 
     @Test
     void testGetBoardReturnsNull() {
-        Model model = new Model(new FakeState());
+        Model model = new Model(new State());
         Map<Coordinate, Token> board = model.getBoard();
         assertNotNull(board);
         assertTrue(board.isEmpty());
@@ -118,21 +57,21 @@ public class ModelTest {
 
     @Test
     void testGetTokenAtReturnsNull() {
-        Model model = new Model(new FakeState());
+        Model model = new Model(new State());
         Token token = model.getTokenAt(null);
         assertNull(token);
     }
 
     @Test
     void testIsInFieldReturnsFalse() {
-        Model model = new Model(new FakeState());
+        Model model = new Model(new State());
         boolean result = model.isInField(null);
         assertFalse(result);
     }
 
     @Test
     void testGetPawnReturnsNull() {
-        Model model = new Model(new FakeState());
+        Model model = new Model(new State());
         List<Coordinate> pawns = model.getPawn(null);
         assertNotNull(pawns);
         assertTrue(pawns.isEmpty());
@@ -140,20 +79,20 @@ public class ModelTest {
 
     @Test
     void testGetTurnReturnsNull() {
-        Model model = new Model(new FakeState());
+        Model model = new Model(new State());
         Team team = model.getTurn();
         assertNull(team);
     }
 
     @Test
     void testMoveRingDoesNotThrowException() {
-        Model model = new Model(new FakeState());
+        Model model = new Model(new State());
         assertDoesNotThrow(() -> model.moveRing(null, null));
     }
 
     @Test
     void testRemoveLineDoesNotThrowException() {
-        Model model = new Model(new FakeState());
+        Model model = new Model(new State());
         assertDoesNotThrow(() -> model.removeLine(null, null));
     }
 }

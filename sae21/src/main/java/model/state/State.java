@@ -302,11 +302,11 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	 * Crée un nouvel état en supprimant le jeton situé à la coordonnée indiquée.
 	 * Respecte l'immuabilité en clonant le plateau avant d'effectuer la suppression.
 	 * * @param coordinate La coordonnée de la case à vider.
-	 * @return Une nouvelle instance de State avec le plateau mis à jour.
+	 * @return Une nouvelle instancremovee de State avec le plateau mis à jour.
 	 */
 	public State removeToken(Coordinate coordinate) {
 	    Map<Coordinate, Token> new_board = new HashMap<>(this.board);
-	    new_board.remove(coordinate);
+	    new_board.replace(coordinate, null);
 	    return new State(new_board, this.turn, this.lines);
 	}
 	
@@ -325,36 +325,29 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	 */
 	
 	public State toggleToken(Coordinate coordinate, Class<? extends Token> tokenClass, Team team) {
-	    try {
-	        java.lang.reflect.Constructor<?> constructor = tokenClass.getConstructors()[0];
-	        Token newToken = (Token) constructor.newInstance(team);
-	        
-	        Map<Coordinate, Token> new_board = new HashMap<>(this.board);
-	        Token existingToken = new_board.get(coordinate);
-	        
-	        if (existingToken != null && existingToken.getClass().equals(tokenClass) && existingToken.getTeam() == team) {
-	            new_board.remove(coordinate);
-	        } else {
-	            new_board.put(coordinate, newToken);
-	        }
-	        
-	        return new State(new_board, this.turn, this.lines);
-	        
-	    } catch (Exception e) {
-	        throw new RuntimeException("Erreur lors de la création du token par réflexion", e);
+	    if (!this.board.containsKey(coordinate)) {
+	        throw new IllegalArgumentException("La coordonnée spécifiée est hors plateau");
 	    }
-	}
-	
-	public static Map<Coordinate, Token> genereTab(int n){
-		Map<Coordinate, Token> board = new HashMap<Coordinate, Token>();
-		for (int i = -n; i <= n; i++) {
-			for (int j = -n; j <= n; j++) {
-				if(Math.sqrt(i*i+j*j+(-i-j)*(-i-j)) < n) {
-					board.put(new CoordinateCube(i, j, -i-j), null);
-				}
-			}
-		}
-		return board;
+
+	    Map<Coordinate, Token> new_board = new HashMap<>(this.board);
+	    Token existingToken = new_board.get(coordinate);
+
+	    Token newToken;
+	    if (tokenClass.equals(Pawn.class)) {
+	        newToken = new Pawn(team);
+	    } else if (tokenClass.equals(Ring.class)) {
+	        newToken = new Ring(team);
+	    } else {
+	        throw new IllegalArgumentException("Type de token non supporté : " + tokenClass.getSimpleName());
+	    }
+
+	    if (existingToken != null && existingToken.getClass().equals(tokenClass) && existingToken.getTeam() == team) {
+	        new_board.put(coordinate, null);
+	    } else {
+	        new_board.put(coordinate, newToken);
+	    }
+
+	    return new State(new_board, this.turn, this.lines);
 	}
 	
 	public boolean isInField(Coordinate c) {

@@ -20,11 +20,20 @@ public class FactoryCube implements IFactory {
 
     @Override
     public IState emptyState() {
-        return new State(new HashMap<>(), Team.WHITE, List.of());
+        return new State(buildBaseBoard(), Team.WHITE, List.of());
     }
 
-    private Map<Coordinate, Token> buildBaseBoard() {
-        return new HashMap<>();
+    public Map<Coordinate, Token> buildBaseBoard() {
+    	int n = 10;
+    	Map<Coordinate, Token> board = new HashMap<Coordinate, Token>();
+		for (int i = -n; i <= n; i++) {
+			for (int j = -n; j <= n; j++) {
+				if(Math.sqrt(i*i+j*j+(-i-j)*(-i-j)) < n) {
+					board.put(new CoordinateCube(i, j, -i-j), null);
+				}
+			}
+		}
+		return board;
     }
 
     @Override
