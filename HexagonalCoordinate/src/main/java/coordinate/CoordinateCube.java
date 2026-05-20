@@ -42,10 +42,16 @@ public class CoordinateCube extends Coordinate {
      * @return Les points en 2D
      */
 	@Override
-	public Point to2DCoordinate() {
-		int x = 2 * q + r + 9;
-		int y = r + 5;
-		return new Point(x, y);
+	public Point to2DCoordinate(Mode mode) {
+		if (mode == Mode.POINTY) {
+	        int x = q + (r + (r & 1)) / 2;
+	        int y = r;
+	        return new Point(x, y);
+	    } else {
+	        int x = q;
+	        int y = r + (q + (q & 1)) / 2;
+	        return new Point(x, y);
+	    }
 	}
 
 	/**
@@ -95,7 +101,7 @@ public class CoordinateCube extends Coordinate {
 		}
 		
 		List<Coordinate> result = new ArrayList<>();
-		int dist = Math.max(Math.max(Math.abs(this.q = target.q), Math.abs(this.r - target.r)), Math.abs(this.s - target.s));
+		int dist = Math.max(Math.max(Math.abs(this.q - target.q), Math.abs(this.r - target.r)), Math.abs(this.s - target.s));
 		
 		for (int i = 1; i < dist; i++) {
 			int newQ = this.q + (target.q - this.q) * i / dist;

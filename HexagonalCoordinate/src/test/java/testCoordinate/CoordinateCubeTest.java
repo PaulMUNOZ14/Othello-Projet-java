@@ -29,11 +29,10 @@ public class CoordinateCubeTest {
 	
 	@Test
 	void testTo2DCoordinate() {
-		// Le centre [0, 0, 0] en Cube doit correspondre au centre [5, 9] en Doubled
 		CoordinateCube center = new CoordinateCube(0, 0, 0);
-		Point p = center.to2DCoordinate();
-		assertEquals(9, p.x(), "La colonne x devrait être 9");
-		assertEquals(5, p.y(), "La ligne y devrait être 5");
+		Point p = center.to2DCoordinate(Mode.POINTY);
+		assertEquals(0, p.x());
+		assertEquals(0, p.y());
 	}
 	
 	@Test
@@ -68,15 +67,15 @@ public class CoordinateCubeTest {
 	@Test
 	void testBetweenValidAxis() throws DifferentAxisException {
 		CoordinateCube start = new CoordinateCube(0, 0, 0);
-		CoordinateCube end = new CoordinateCube(0, -3, 3);
+		CoordinateCube end = new CoordinateCube(2, 0, -2);
 		
 		List<Coordinate> path = start.between(Mode.POINTY, end);
-		assertEquals(2, path.size());
+		assertEquals(1, path.size());
 		
 		CoordinateCube firstStep = (CoordinateCube) path.get(0);
-		assertEquals(0, firstStep.getQ());
-		assertEquals(-1, firstStep.getR());
-		assertEquals(1, firstStep.getS());
+		assertEquals(1, firstStep.getQ());
+		assertEquals(0, firstStep.getR());
+		assertEquals(-1, firstStep.getS());
 	}
 	
 	@Test
