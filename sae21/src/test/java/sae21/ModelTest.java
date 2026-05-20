@@ -63,6 +63,18 @@ public class ModelTest {
 			// TODO Auto-generated method stub
 			return null;
 		}
+
+		@Override
+		public IState removeToken(Coordinate c) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public IState toggleToken(Coordinate position, Class<?> token, Team team) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 
     @Test
