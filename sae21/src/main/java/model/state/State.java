@@ -28,11 +28,10 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	 */
 	@Override
 	public IState move(Move move) throws DifferentAxisException {
-		if (!lines.isEmpty())throw new RuntimeException("Une ligne doit être supprimée avant de jouer");
 		if(!board.containsKey(move.getFrom())) throw new IndexOutOfBoundsException("case hors platau");
 		if(!board.containsKey(move.getTo())) throw new IndexOutOfBoundsException("case hors platau");
-	    Token ring = board.get(move.getFrom());
-	    if (!(ring instanceof Ring || board.get(ring).getTeam() != turn)) {
+		Token ring = board.get(move.getFrom());
+	    if (ring == null || !(ring instanceof Ring) || ring.getTeam() != turn) {
 	        throw new IllegalArgumentException("Pas d'anneau du joueur à l'endroit donné");
 	    }
 
@@ -47,13 +46,18 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 
 	    Map<Coordinate, Token> new_board = new HashMap<>(board);
 	    
+	    // Parcours uniquement les cases intermédiaires situées STRICTEMENT entre le départ et l'arrivée
 	    for (Coordinate coordinate : entre) {
+	        if (coordinate.equals(move.getFrom()) || coordinate.equals(move.getTo())) {
+	            continue;
+	        }
 	        Token piece = board.get(coordinate);
 	        if (piece instanceof Pawn) {
+	            // Règle du retournement : on inverse l'équipe du pion survolé
 	            new_board.put(coordinate, new Pawn(piece.getTeam().other()));
-	        } else if (piece == null) {
-	        	new_board.put(coordinate, new Pawn(ring.getTeam()));
-	        }
+	        } 
+	        // CORRECTION : L'anneau ne doit rien faire si la case (piece) est null. 
+	        // On a supprimé le 'else if (piece == null)' qui semait des pions à l'infini.
 	    }
 
 	    new_board.put(move.getFrom(), new Pawn(ring.getTeam()));
@@ -287,16 +291,13 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 		List<Set<Coordinate>> allLines = new ArrayList<>();
 		Direction[] directionsToTest = {Direction.E, Direction.SE, Direction.SO};
 		
-		//boucle sur toutes les coordonnées enregistrées dans notre plateau
 		for (Coordinate startCoord : this.board.keySet()) {
 			Token token = this.board.get(startCoord);
 		
-			//si la case est vide ou si ce n'est pas un Pion (si c'est un Anneau par exemple) alors on ignore
 			if (token == null || !(token instanceof Pawn)) {
 	            continue;
 	        }
 			
-			//Test des 3 directions a partir de ce point de départ 
 			Team currentTeam = token.getTeam();
 			for (Direction dir : directionsToTest) {
 	            Set<Coordinate> currentLine = new HashSet<>();
@@ -304,25 +305,21 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	            Coordinate currentCoord = startCoord;
 	            
 	            for (int i = 0; i < 4; i++) {
-	            	//on avance d'une case dans la direction testée
 	                try {
-	                	//a verifier
 	                	currentCoord = currentCoord.toDir(Mode.POINTY, dir);
 	                	
 	                	Token nextToken = this.board.get(currentCoord);
 
-						//si c'est bien un pion de la même équipe, on l'ajoute à la ligne
 						if (nextToken != null && (nextToken instanceof Pawn) && nextToken.getTeam() == currentTeam) {
 							currentLine.add(currentCoord);
 						} else {
-							break; //la ligne est brisée
+							break; 
 						}
 	                } catch (Exception e) {
-	                	break; //on est sorti des limites du terrain
+	                	break; 
 	                }
 	            }
 	            
-	            //si on a exactement 5 pions, on sauvegarde cette ligne
 	            if (currentLine.size() == 5) {
 					allLines.add(currentLine);
 				}
@@ -332,37 +329,12 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 		return allLines;
 	}
 	
-	
-	
-	
-	
-	/**
-	 * RemoveToken
-	 * Crée un nouvel état en supprimant le jeton situé à la coordonnée indiquée.
-	 * Respecte l'immuabilité en clonant le plateau avant d'effectuer la suppression.
-	 * * @param coordinate La coordonnée de la case à vider.
-	 * @return Une nouvelle instancremovee de State avec le plateau mis à jour.
-	 */
 	public State removeToken(Coordinate coordinate) {
 	    Map<Coordinate, Token> new_board = new HashMap<>(this.board);
-	    new_board.replace(coordinate, null);
+	    new_board.remove(coordinate);
 	    return new State(new_board, this.turn, this.lines);
 	}
-	
-	
-	
-	/**
-	 * ToggleToken
-	 * Ajoute ou supprime dynamiquement un jeton sur le plateau via la réflexion Java.
-	 * Si un jeton de la même classe et de la même équipe est déjà présent sur la case, il est retiré.
-	 * Sinon, un nouveau jeton est instancié à la volée et placé sur le plateau.
-	 * * @param coordinate La coordonnée cible sur le plateau.
-	 * @param tokenClass La classe du jeton à créer (ex: Pawn.class ou Ring.class).
-	 * @param team L'équipe (Team) à assigner au jeton.
-	 * @return Une nouvelle instance de State avec le plateau mis à jour.
-	 * @throws RuntimeException Si la génération de l'instance par réflexion échoue.
-	 */
-	
+
 	public IState toggleToken(Coordinate position, Class<?> token, Team team) {
 	    if (!this.board.containsKey(position)) {
 	        throw new IllegalArgumentException("La coordonnée spécifiée est hors plateau");
@@ -380,11 +352,10 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	        throw new IllegalArgumentException("Type de token non supporté : " + token.getSimpleName());
 	    }
 
-	    // CORRECTION ICI : Remplacement de 'token' par 'position' comme clé de la Map
 	    if (existingToken != null && existingToken.getClass().equals(token) && existingToken.getTeam() == team) {
-	        new_board.put(position, null); // On retire le jeton en remettant la case à null
+	        new_board.put(position, null); 
 	    } else {
-	        new_board.put(position, newToken); // On place ou remplace par le nouveau jeton
+	        new_board.put(position, newToken); 
 	    }
 
 	    return new State(new_board, this.turn, this.lines);
@@ -426,7 +397,4 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 		State other = (State) obj;
 		return Objects.equals(board, other.board) && Objects.equals(lines, other.lines) && turn == other.turn;
 	}
-
-	
 }
-
