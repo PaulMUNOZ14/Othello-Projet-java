@@ -16,13 +16,9 @@ public interface IState {
 	public Map<Coordinate, Token> board();
 	public Map<Team, List<Coordinate>> rings();
 	public List<Set<Coordinate>> lines();
-	
-	
 	public Team turn();
 	public Team winner();
-	
 	public List<Set<Coordinate>> getPawnsLines();
-	
-	
-	
+	public IState removeToken (Coordinate c);
+	public IState toggleToken(Coordinate position,Class<?> token,Team team);
 }

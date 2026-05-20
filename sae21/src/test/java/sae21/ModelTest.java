@@ -95,4 +95,32 @@ public class ModelTest {
         Model model = new Model(new State());
         assertDoesNotThrow(() -> model.removeLine(null, null));
     }
+    
+    @Test
+    void testGetRingsEmpty() {
+        Model model = new Model(new FakeState());
+        List<Coordinate> rings = model.getRings(Team.WHITE);
+
+        assertNotNull(rings);
+        assertTrue(rings.isEmpty());
+    }
+    
+    @Test
+    void testGetBoardNeverNull() {
+        Model model = new Model(new FakeState());
+        Map<Coordinate, Token> board = model.getBoard();
+
+        assertNotNull(board);
+    }
+    
+    @Test
+    void testGetPawnEmpty() {
+        Model model = new Model(new FakeState());
+        List<Coordinate> pawns = model.getPawn(Team.WHITE);
+
+        assertNotNull(pawns);
+        assertTrue(pawns.isEmpty());
+    }
+    
+    
 }

@@ -24,6 +24,7 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 
 	@Override
 	public IState move(Move move) throws DifferentAxisException {
+		if (!lines.isEmpty())throw new RuntimeException("Une ligne doit être supprimée avant de jouer");
 		if(!board.containsKey(move.getFrom())) throw new IndexOutOfBoundsException("case hors platau");
 		if(!board.containsKey(move.getTo())) throw new IndexOutOfBoundsException("case hors platau");
 	    Token ring = board.get(move.getFrom());

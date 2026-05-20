@@ -38,7 +38,7 @@ public class FactoryCube implements IFactory {
 
     @Override
     public IState stateForWhiteLineTest() {
-        State s = new State(buildBaseBoard(), Team.WHITE, List.of());
+    	IState s = new State(buildBaseBoard(), Team.WHITE, List.of());
         
         s = s.toggleToken(new CoordinateCube(0, 0, 0), Pawn.class, Team.WHITE);
         s = s.toggleToken(new CoordinateCube(1, -1, 0), Pawn.class, Team.WHITE);
@@ -51,7 +51,7 @@ public class FactoryCube implements IFactory {
 
     @Override
     public IState stateForBlackLineTest() {
-        State s = new State(buildBaseBoard(), Team.BLACK, List.of());
+    	IState s = new State(buildBaseBoard(), Team.BLACK, List.of());
         
         s = s.toggleToken(new CoordinateCube(0, 0, 0), Pawn.class, Team.BLACK);
         s = s.toggleToken(new CoordinateCube(1, -1, 0), Pawn.class, Team.BLACK);
@@ -64,7 +64,7 @@ public class FactoryCube implements IFactory {
 
     @Override
     public IState testState() {
-        State s = new State(buildBaseBoard(), Team.WHITE, List.of());
+    	IState s = new State(buildBaseBoard(), Team.WHITE, List.of());
         
         s = s.toggleToken(new CoordinateCube(0, 0, 0), Ring.class, Team.WHITE);
         s = s.toggleToken(new CoordinateCube(1, 0, -1), Pawn.class, Team.BLACK);
@@ -74,7 +74,7 @@ public class FactoryCube implements IFactory {
 
     @Override
     public IState doubleLineStateTest() {
-        State s = new State(buildBaseBoard(), Team.WHITE, List.of());
+    	IState s = new State(buildBaseBoard(), Team.WHITE, List.of());
         
         s = s.toggleToken(new CoordinateCube(0, 0, 0), Pawn.class, Team.WHITE);
         s = s.toggleToken(new CoordinateCube(1, -1, 0), Pawn.class, Team.WHITE);

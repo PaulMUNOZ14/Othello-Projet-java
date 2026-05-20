@@ -58,7 +58,7 @@ public class FactoryDoubled implements IFactory {
 
     @Override
     public IState stateForWhiteLineTest() {
-        State s = new State(buildBaseBoard(), Team.WHITE, List.of());
+    	IState s = new State(buildBaseBoard(), Team.WHITE, List.of());
         
         s = s.toggleToken(new CoordinateDoubled(5, 1), Pawn.class, Team.WHITE);
         s = s.toggleToken(new CoordinateDoubled(5, 3), Pawn.class, Team.WHITE);
@@ -71,7 +71,7 @@ public class FactoryDoubled implements IFactory {
 
     @Override
     public IState stateForBlackLineTest() {
-        State s = new State(buildBaseBoard(), Team.BLACK, List.of());
+    	IState s = new State(buildBaseBoard(), Team.BLACK, List.of());
         
         s = s.toggleToken(new CoordinateDoubled(5, 1), Pawn.class, Team.BLACK);
         s = s.toggleToken(new CoordinateDoubled(5, 3), Pawn.class, Team.BLACK);
@@ -84,7 +84,7 @@ public class FactoryDoubled implements IFactory {
 
     @Override
     public IState testState() {
-        State s = new State(buildBaseBoard(), Team.WHITE, List.of());
+        IState s = new State(buildBaseBoard(), Team.WHITE, List.of());
         
         s = s.toggleToken(new CoordinateDoubled(5, 9), Ring.class, Team.WHITE);
         s = s.toggleToken(new CoordinateDoubled(6, 10), Pawn.class, Team.BLACK);
@@ -94,7 +94,7 @@ public class FactoryDoubled implements IFactory {
 
     @Override
     public IState doubleLineStateTest() {
-        State s = new State(buildBaseBoard(), Team.WHITE, List.of());
+    	IState s = new State(buildBaseBoard(), Team.WHITE, List.of());
         
         s = s.toggleToken(new CoordinateDoubled(4, 2), Pawn.class, Team.WHITE);
         s = s.toggleToken(new CoordinateDoubled(4, 4), Pawn.class, Team.WHITE);

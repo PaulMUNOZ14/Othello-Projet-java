@@ -51,7 +51,7 @@ class TestState2 {
         board.put(depart, anneauBlanc);
 
         // Instanciation de State avec l'ArrayList vide pour le 3ème paramètre
-        IState state = new State(board, Team.WHITE, null);
+        IState state = new State(board, Team.WHITE, List.of());
         Set<Coordinate> coupsPossibles = state.availableMoves(depart);
 
         assertFalse(coupsPossibles.isEmpty(), "L'anneau devrait avoir des mouvements disponibles");
@@ -70,7 +70,7 @@ class TestState2 {
         board.put(depart, new Ring(Team.WHITE));
         board.put(voisin, new Ring(Team.BLACK)); // Un autre anneau bloque la route
 
-        IState state = new State(board, Team.WHITE, null);
+        IState state = new State(board, Team.WHITE, List.of());
         Set<Coordinate> coupsPossibles = state.availableMoves(depart);
 
         // Un anneau ne peut ni s'arrêter sur un autre anneau, ni le sauter
@@ -88,7 +88,7 @@ class TestState2 {
         board.put(depart, anneauBlanc);
         board.put(casePion, new Pawn(Team.BLACK));
 
-        IState state = new State(board, Team.WHITE, null);
+        IState state = new State(board, Team.WHITE, List.of());
         Move coup = new Move(depart, arrivee);
 
         // Exécution du coup
@@ -113,13 +113,12 @@ class TestState2 {
         CoordinateCube arriveeInvalide = new CoordinateCube(8, 0, -8); 
 
         board.put(depart, new Ring(Team.WHITE));
-        IState state = new State(board, Team.WHITE, null);
+        IState state = new State(board, Team.WHITE, List.of());
         Move coupInvalide = new Move(depart, arriveeInvalide);
 
-        // Le move doit lever une exception si le coup n'est pas valide
+        // Le move doit lever une exception si le coup est hors plateau
         assertThrows(IndexOutOfBoundsException.class, () -> {
             state.move(coupInvalide);
-        }, "Un coup impossible doit lever une IndexOutOfBoundsException");
+        }, "Un coup hors plateau doit lever une IndexOutOfBoundsException");
     }
-
 }

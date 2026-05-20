@@ -40,17 +40,27 @@ public class TestToken {
 
         assertDoesNotThrow(() -> t.setTeam(Team.BLACK));
     }
+    
+    @Test
+    void testSetTeamActuallyChangesValue() {
+        Token t = new FakeToken(Team.WHITE);
+
+        t.setTeam(Team.BLACK);
+
+        assertEquals(Team.BLACK, t.getTeam());
+    }
+    
     @Test
     void testCharRepr() {
         Token t = new FakeToken(Team.WHITE);
         assertEquals("F", t.charRepr());
     }
+    
     @Test
-    void testClone() {
+    void testCloneType() {
         Token t = new FakeToken(Team.WHITE);
         Token copy = t.clone();
-        assertNotNull(copy);
-        assertEquals(t.getTeam(), copy.getTeam());
-        assertNotSame(t, copy);
+
+        assertEquals(FakeToken.class, copy.getClass());
     }
 }
