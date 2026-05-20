@@ -1,4 +1,4 @@
-package sae21.testStage;
+package sae21.testState;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,7 +26,7 @@ import model.tokens.Pawn;
 import model.tokens.Ring;
 import model.tokens.Token;
 
-class TestStage {
+class TestState2 {
 		
 	private Map<Coordinate, Token> board;
     private int n = 5; // Taille standard du plateau YINSH

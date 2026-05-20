@@ -1,4 +1,4 @@
-package sae21.testStage;
+package sae21.testState;
 
 import static org.junit.jupiter.api.Assertions.*;
 
