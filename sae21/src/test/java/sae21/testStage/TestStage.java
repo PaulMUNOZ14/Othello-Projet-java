@@ -5,8 +5,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import com.sun.jdi.connect.Connector.Argument;
 
 import coordinate.Coordinate;
 import coordinate.CoordinateCube;
@@ -23,70 +27,99 @@ import model.tokens.Ring;
 import model.tokens.Token;
 
 class TestStage {
-	
-	public static Map<Coordinate, Token> genereTab(int n){
-		Map<Coordinate, Token> board = new HashMap<Coordinate, Token>();
-		for (int i = -n; i <= n; i++) {
-			for (int j = -n; j <= n; j++) {
-				if(Math.sqrt(i*i+j*j+(-i-j)*(-i-j)) < n) {
-					board.put(new CoordinateCube(i, j, -i-j), null);
-				}
-			}
-		}
-		return board;
-	}
-	
-	public static void afficheBoard(Map<Coordinate, Token> board, int n) {
-	    // On parcourt les lignes du haut vers le bas
-	    for (int j = -n; j <= n; j++) {
-	        
-	        // 1. Gérer l'indentation pour l'effet de grille hexagonale (nid d'abeille)
-	        int espaces = Math.abs(j);
-	        for (int e = 0; e < espaces; e++) {
-	            System.out.print("  "); // Deux espaces pour un décalage fluide
-	        }
-
-	        // 2. Parcourir les colonnes de gauche à droite
-	        for (int i = -n; i <= n; i++) {
-	            CoordinateCube coord = new CoordinateCube(i, j, -i-j);
-	            
-	            // On vérifie si la coordonnée fait partie du plateau
-	            if (board.containsKey(coord)) {
-	                Token token = board.get(coord);
-	                
-	                if (token == null) {
-	                    System.out.print("[ . ] "); // Case vide
-	                } else {
-	                    // On récupère l'équipe (WHITE ou BLACK)
-	                    String t = (token.getTeam() == Team.WHITE) ? "W" : "B";
-	                    
-	                    if (token instanceof Ring) {
-	                        // Ex: [ROB] pour Ring Orange/Oeil Black ou simplement [R.B]
-	                        System.out.print("[" + t + "R ] "); // Exemple : [WR ] ou [BR ]
-	                    } else if (token instanceof Pawn) {
-	                        System.out.print("[" + t + "P ] "); // Exemple : [WP ] ou [BP ]
-	                    } else {
-	                        System.out.print("[ ? ] "); // Sécurité
-	                    }
-	                }
-	            } 
-	        }
-	        // Fin de la ligne, on passe à la suivante
-	        System.out.println();
-	    }
-	}
-	
-	
-	@Test
-	void testMove() throws DifferentAxisException {
-		Map<Coordinate, Token> board =  genereTab(5);
-		board.replace(new CoordinateCube(0,0,0), new Ring(Team.BLACK));
-		State state = new State(board, Team.BLACK, null);
-		IState sta = state.move(new Move(new CoordinateCube(0, 0, 0), new CoordinateCube(2, 0, -2)));
-		assertTrue(sta.board().get(new CoordinateCube(1, 0, -1)) instanceof Pawn);
-		assertTrue(sta.board().get(new CoordinateCube(1, 0, -1)).getTeam() == Team.BLACK);
-		afficheBoard(board, 5);
 		
-	}
+	private Map<Coordinate, Token> board;
+    private int n = 5; // Taille standard du plateau YINSH
+
+    @BeforeEach
+    public void setUp() {
+        // Initialisation d'un plateau vide avant chaque test
+        board = State.genereTab(n); 
+    }
+
+    @Test
+    public void testGenereTab_ContientOrigine() {
+        CoordinateCube centre = new CoordinateCube(0, 0, 0);
+        assertTrue(board.containsKey(centre), "Le centre du plateau devrait exister");
+        assertNull(board.get(centre), "Le centre devrait être vide au départ");
+    }
+
+    @Test
+    public void testAvailableMoves_CaseVideSansObstacle() {
+        CoordinateCube depart = new CoordinateCube(0, 0, 0);
+        Ring anneauBlanc = new Ring(Team.WHITE);
+        board.put(depart, anneauBlanc);
+
+        // Instanciation de State avec l'ArrayList vide pour le 3ème paramètre
+        IState state = new State(board, Team.WHITE, null);
+        Set<Coordinate> coupsPossibles = state.availableMoves(depart);
+
+        assertFalse(coupsPossibles.isEmpty(), "L'anneau devrait avoir des mouvements disponibles");
+        
+        // Vérification sur l'axe EST
+        CoordinateCube destinationEst = new CoordinateCube(1, 0, -1);
+        assertTrue(coupsPossibles.contains(destinationEst), "L'anneau devrait pouvoir aller à l'Est");
+    }
+
+    @Test
+    public void testAvailableMoves_BloqueParUnAnneau() {
+        CoordinateCube depart = new CoordinateCube(0, 0, 0);
+        CoordinateCube voisin = new CoordinateCube(1, 0, -1); 
+        CoordinateCube derriereVoisin = new CoordinateCube(2, 0, -2);
+
+        board.put(depart, new Ring(Team.WHITE));
+        board.put(voisin, new Ring(Team.BLACK)); // Un autre anneau bloque la route
+
+        IState state = new State(board, Team.WHITE, null);
+        Set<Coordinate> coupsPossibles = state.availableMoves(depart);
+
+        // Un anneau ne peut ni s'arrêter sur un autre anneau, ni le sauter
+        assertFalse(coupsPossibles.contains(voisin), "On ne peut pas aller sur un autre anneau");
+        assertFalse(coupsPossibles.contains(derriereVoisin), "On ne peut pas sauter un autre anneau");
+    }
+
+    @Test
+    public void testMove_DeplacementEtRetournementPion() throws DifferentAxisException {
+        CoordinateCube depart = new CoordinateCube(0, 0, 0);
+        CoordinateCube casePion = new CoordinateCube(1, 0, -1);
+        CoordinateCube arrivee = new CoordinateCube(2, 0, -2);
+
+        Ring anneauBlanc = new Ring(Team.WHITE);
+        board.put(depart, anneauBlanc);
+        board.put(casePion, new Pawn(Team.BLACK));
+
+        IState state = new State(board, Team.WHITE, null);
+        Move coup = new Move(depart, arrivee);
+
+        // Exécution du coup
+        IState prochainEtat = state.move(coup);
+        Map<Coordinate, Token> nouveauBoard = prochainEtat.board();
+
+        // 1. L'anneau blanc est arrivé à destination
+        assertEquals(anneauBlanc, nouveauBoard.get(arrivee), "L'anneau blanc doit être à l'arrivée");
+        
+        // 2. L'anneau a laissé un pion de sa couleur au départ
+        assertTrue(nouveauBoard.get(depart) instanceof Pawn, "Le départ doit contenir un pion");
+        assertEquals(Team.WHITE, nouveauBoard.get(depart).getTeam(), "Le pion de départ doit être Blanc");
+
+        // 3. Le pion noir sauté a été retourné en pion blanc
+        assertTrue(nouveauBoard.get(casePion) instanceof Pawn, "La case intermédiaire doit toujours être un pion");
+        assertEquals(Team.WHITE, nouveauBoard.get(casePion).getTeam(), "Le pion sauté aurait dû devenir Blanc");
+    }
+
+    @Test
+    public void testMove_CoupInvalide_LanceException() {
+        CoordinateCube depart = new CoordinateCube(0, 0, 0);
+        CoordinateCube arriveeInvalide = new CoordinateCube(8, 0, -8); 
+
+        board.put(depart, new Ring(Team.WHITE));
+        IState state = new State(board, Team.WHITE, null);
+        Move coupInvalide = new Move(depart, arriveeInvalide);
+
+        // Le move doit lever une exception si le coup n'est pas valide
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            state.move(coupInvalide);
+        }, "Un coup impossible doit lever une IndexOutOfBoundsException");
+    }
 
 }

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import coordinate.Coordinate;
+import coordinate.CoordinateCube;
 import coordinate.DifferentAxisException;
 import coordinate.Direction;
 import coordinate.Mode;
@@ -22,11 +23,11 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 
 	@Override
 	public IState move(Move move) throws DifferentAxisException {
-		if(!board.containsKey(move.getFrom())) throw new IllegalArgumentException("case hors platau");
-		if(!board.containsKey(move.getTo())) throw new IllegalArgumentException("case hors platau");
+		if(!board.containsKey(move.getFrom())) throw new IndexOutOfBoundsException("case hors platau");
+		if(!board.containsKey(move.getTo())) throw new IndexOutOfBoundsException("case hors platau");
 	    Token ring = board.get(move.getFrom());
-	    if (!(ring instanceof Ring)) {
-	        throw new IllegalArgumentException("Pas d'anneau à l'endroit donné");
+	    if (!(ring instanceof Ring || board.get(ring).getTeam() != turn)) {
+	        throw new IllegalArgumentException("Pas d'anneau du joueur à l'endroit donné");
 	    }
 
 	    if (board.get(move.getTo()) != null) {
@@ -102,10 +103,10 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	    Map<Coordinate, Token> new_board = new HashMap<>(board);
 
 	    for (Coordinate co : removeLine.getLine()) {
-	        new_board.remove(co);
+	        new_board.put(co, null); 
 	    }
 
-	    new_board.remove(removeLine.getRing());
+	    new_board.put(removeLine.getRing(), null); 
 
 	    return new State(new_board, turn, lines);
 	}
@@ -176,6 +177,18 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	public List<Set<Coordinate>> getPawnsLines() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public static Map<Coordinate, Token> genereTab(int n){
+		Map<Coordinate, Token> board = new HashMap<Coordinate, Token>();
+		for (int i = -n; i <= n; i++) {
+			for (int j = -n; j <= n; j++) {
+				if(Math.sqrt(i*i+j*j+(-i-j)*(-i-j)) < n) {
+					board.put(new CoordinateCube(i, j, -i-j), null);
+				}
+			}
+		}
+		return board;
 	}
 	
 }
