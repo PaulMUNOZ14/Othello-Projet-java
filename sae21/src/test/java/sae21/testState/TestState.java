@@ -14,6 +14,7 @@ import coordinate.CoordinateCube;
 import model.Team;
 import model.state.State;
 import model.tokens.Pawn;
+import model.tokens.Ring;
 import model.tokens.Token;
 
 class TestState {
