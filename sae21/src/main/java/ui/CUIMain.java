@@ -18,6 +18,10 @@ import model.factory.FactoryCube; // Ou votre implémentation concrète de IFact
 
 public class CUIMain {
     
+	/**
+	 * la fonction principale pour l'interface en ligne de commande
+	 * @param args
+	 */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         
@@ -139,6 +143,11 @@ public class CUIMain {
         scanner.close();
     }
     
+    /**
+     * Affiche le plateau dynamiquement
+     * @param plateau le plateau de jeu
+     * @param mode le mode du plateau
+     */
     public static void afficherPlateauDynamique(Map<Coordinate, Token> plateau, Mode mode) {
         int maxLignes = (mode == Mode.FLAT) ? 11 : 21;
         int maxColonnes = (mode == Mode.FLAT) ? 19 : 11;
