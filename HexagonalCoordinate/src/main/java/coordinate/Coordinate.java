@@ -101,5 +101,4 @@ public abstract class Coordinate {
     public Coordinate SE(Mode mode) {
     	return toDir(mode, Direction.SE);
     }
-
 }

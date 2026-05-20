@@ -3,12 +3,11 @@ package model.state;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.management.RuntimeErrorException;
 
 import coordinate.Coordinate;
 import coordinate.DifferentAxisException;
@@ -20,11 +19,12 @@ import model.action.RemoveLine;
 import model.tokens.*;
 
 public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate>> lines) implements IState{
+	
 
 	@Override
 	public IState move(Move move) throws DifferentAxisException {
-		if(!board.containsKey(move.getFrom())) throw new RuntimeErrorException(null, "case hors platau");
-		if(!board.containsKey(move.getTo())) throw new RuntimeErrorException(null, "case hors platau");
+		if(!board.containsKey(move.getFrom())) throw new IllegalArgumentException("case hors platau");
+		if(!board.containsKey(move.getTo())) throw new IllegalArgumentException("case hors platau");
 	    Token ring = board.get(move.getFrom());
 	    if (!(ring instanceof Ring)) {
 	        throw new IllegalArgumentException("Pas d'anneau à l'endroit donné");
@@ -75,13 +75,13 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	public IState removeLine(RemoveLine removeLine) {
 
 	    if (removeLine.getLine().size() != 5) {
-	        throw new IllegalArgumentException(
+	        throw new RuntimeException(
 	            "Taille de ligne impossible : " + removeLine.getLine().size()
 	        );
 	    }
 
 	    if (!(board.get(removeLine.getRing()) instanceof Ring)) {
-	        throw new IllegalArgumentException(
+	        throw new RuntimeException(
 	            "La coordonnée spécifiée ne contient pas un anneau"
 	        );
 	    }
@@ -91,13 +91,13 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	    for (Coordinate coo : removeLine.getLine()) {
 
 	        if (!board.containsKey(coo)) {
-	            throw new IllegalArgumentException("Case de la ligne hors plateau");
+	            throw new RuntimeException("Case de la ligne hors plateau");
 	        }
 
 	        Token piece = board.get(coo);
 
 	        if (!(piece instanceof Pawn)) {
-	            throw new IllegalArgumentException(
+	            throw new RuntimeException(
 	                "La ligne ne doit contenir que des pions"
 	            );
 	        }
@@ -105,7 +105,7 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	        if (teamLine == null) {
 	            teamLine = piece.getTeam();
 	        } else if (piece.getTeam() != teamLine) {
-	            throw new IllegalArgumentException(
+	            throw new RuntimeException(
 	                "La ligne contient plusieurs couleurs"
 	            );
 	        }
@@ -124,20 +124,61 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 
 	@Override
 	public Set<Coordinate> availableMoves(Coordinate from) {
-		// TODO Auto-generated method stub
-		return null;
+	    Map<Mode, ArrayList<Direction>> dir = new HashMap<Mode, ArrayList<Direction>>();
+	    Mode mode = Mode.POINTY;
+	    dir.put(Mode.FLAT, new ArrayList<Direction>());
+	    dir.put(Mode.POINTY, new ArrayList<Direction>());
+	    dir.get(Mode.POINTY).add(Direction.NE);
+	    dir.get(Mode.POINTY).add(Direction.NO);
+	    dir.get(Mode.POINTY).add(Direction.SE);
+	    dir.get(Mode.POINTY).add(Direction.SO);
+	    dir.get(Mode.POINTY).add(Direction.E);
+	    dir.get(Mode.POINTY).add(Direction.O);
+	    dir.get(Mode.FLAT).add(Direction.NE);
+	    dir.get(Mode.FLAT).add(Direction.NO);
+	    dir.get(Mode.FLAT).add(Direction.SE);
+	    dir.get(Mode.FLAT).add(Direction.SO);
+	    dir.get(Mode.FLAT).add(Direction.N);
+	    dir.get(Mode.FLAT).add(Direction.S);
+	    Set<Coordinate> moves = new HashSet<Coordinate>();
+	    for (Direction direction : dir.get(mode)) {
+			boolean continu = true;
+			boolean pawn_encountered = false;
+			Coordinate position = from;
+			
+			
+			while(continu && board.containsKey(position.toDir(mode, direction))) {
+				position = from.toDir(mode, direction);
+				if(board.get(position) == null) {
+					moves.add(position);
+					if (pawn_encountered) continu = false;
+				}
+				else if(board.get(position) instanceof Ring){
+					continu = false;
+				} else if(board.get(position) instanceof Pawn){
+					pawn_encountered = true;
+				}
+			}
+		}
+	    return moves;
 	}
 
 	@Override
 	public Map<Coordinate, Token> board() {
-		// TODO Auto-generated method stub
-		return null;
+		return board;
 	}
 
 	@Override
 	public Map<Team, List<Coordinate>> rings() {
-		// TODO Auto-generated method stub
-		return null;
+		Map<Team, List<Coordinate>> anneaux = new HashMap<Team, List<Coordinate>>();
+		anneaux.put(Team.BLACK, new ArrayList<Coordinate>());
+		anneaux.put(Team.WHITE, new ArrayList<Coordinate>());
+		for (Coordinate coordinates : board.keySet()) {
+			if (board.get(coordinates) instanceof Ring) {
+				anneaux.get(board.get(coordinates).getTeam()).add(coordinates);
+			}
+		}
+		return anneaux;
 	}
 
 	@Override
@@ -190,8 +231,7 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 
 	@Override
 	public Team turn() {
-		// TODO Auto-generated method stub
-		return null;
+		return turn;
 	}
 
 	@Override

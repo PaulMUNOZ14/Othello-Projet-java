@@ -2,6 +2,7 @@ package coordinate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class CoordinateCube extends Coordinate {
 
@@ -18,7 +19,7 @@ public class CoordinateCube extends Coordinate {
      */
     public CoordinateCube(int q, int r, int s) {
         if (q + r + s != 0) {
-        	throw new IllegalArgumentException("La contrainte q + r + s = 0 n'est pas respectée.");
+        	throw new IllegalArgumentException("La contrainte q + r + s = 0 n'est pas respectée. q="+q+" r="+r+" s="+s);
         }
         this.q = q;
         this.r = r;
@@ -95,7 +96,7 @@ public class CoordinateCube extends Coordinate {
 		}
 		
 		List<Coordinate> result = new ArrayList<>();
-		int dist = Math.max(Math.max(Math.abs(this.q = target.q), Math.abs(this.r - target.r)), Math.abs(this.s - target.s));
+		int dist = Math.max(Math.max(Math.abs(this.q - target.q), Math.abs(this.r - target.r)), Math.abs(this.s - target.s));
 		
 		for (int i = 1; i < dist; i++) {
 			int newQ = this.q + (target.q - this.q) * i / dist;
@@ -107,4 +108,25 @@ public class CoordinateCube extends Coordinate {
 		return result;
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(q, r, s);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CoordinateCube other = (CoordinateCube) obj;
+		return q == other.q && r == other.r && s == other.s;
+	}
+
+	@Override
+	public String toString() {
+		return "CoordinateCube [q=" + q + ", r=" + r + ", s=" + s + "]";
+	}
 }
