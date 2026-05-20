@@ -1,6 +1,8 @@
 package model.state;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -10,6 +12,7 @@ import javax.management.RuntimeErrorException;
 
 import coordinate.Coordinate;
 import coordinate.DifferentAxisException;
+import coordinate.Direction;
 import coordinate.Mode;
 import model.Team;
 import model.action.Move;
@@ -139,8 +142,50 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 
 	@Override
 	public List<Set<Coordinate>> lines() {
-		// TODO Auto-generated method stub
-		return null;
+	    List<Set<Coordinate>> result = new ArrayList<>();
+	    Direction[] directions = {
+	        Direction.E,
+	        Direction.NE,
+	        Direction.SE
+	    };
+	    for (Coordinate start : board.keySet()) {
+	        Token token = board.get(start);
+	        if (!(token instanceof Pawn pawn))
+	            continue;
+	        Team team = pawn.getTeam();
+	        for (Direction dir : directions) {
+	        	Coordinate previous = start.toDir(Mode.POINTY, dir.opposite());
+	        	Token previousToken = board.get(previous);
+	        	if (previousToken instanceof Pawn prevPawn
+	        	        && prevPawn.getTeam() == team) {
+	        	    continue;
+	        	}
+	            List<Coordinate> aligned = new ArrayList<>();
+	            aligned.add(start);
+	            Coordinate current = start.toDir(Mode.POINTY, dir);
+	            while (board.containsKey(current)) {
+	                Token t = board.get(current);
+	                if (!(t instanceof Pawn p))
+	                    break;
+	                if (p.getTeam() != team)
+	                    break;
+	                aligned.add(current);
+	                current = current.toDir(Mode.POINTY, dir);
+	            }
+	            	if (aligned.size() >= 5) {
+	                for (int i = 0; i <= aligned.size() - 5; i++) {
+	                    Set<Coordinate> line = new HashSet<>();
+	                    for (int j = 0; j < 5; j++) {
+	                        line.add(aligned.get(i + j));
+	                    }
+	                    if (!result.contains(line)) {
+	                        result.add(line);
+	                    }
+	                }
+	            }
+	        }
+	    }
+	    return result;
 	}
 
 	@Override
@@ -149,6 +194,12 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 		return null;
 	}
 
+	@Override
+	public Team winner() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	@Override
 	public List<Set<Coordinate>> getPawnsLines() {
 		// TODO Auto-generated method stub
@@ -177,5 +228,6 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 		State other = (State) obj;
 		return Objects.equals(board, other.board) && Objects.equals(lines, other.lines) && turn == other.turn;
 	}
+
 	
 }
