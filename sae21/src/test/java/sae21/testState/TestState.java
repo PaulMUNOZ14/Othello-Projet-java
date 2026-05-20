@@ -238,18 +238,23 @@ class TestState {
 	    assertNull(state.winner());
 	}
 	
-	/*@Test
-	void testWinner_draw_noMoves() {
+	@Test
+	void testWinner_draw_whiteCornerBlocked() {
 	    Map<Coordinate, Token> board = new HashMap<>();
-	    Coordinate white = new CoordinateCube(0, 0, 0);
-	    board.put(white, new Ring(Team.WHITE));
-	    board.put(new CoordinateCube(1, -1, 0), new Ring(Team.BLACK));
-	    board.put(new CoordinateCube(-1, 1, 0), new Ring(Team.BLACK));
-	    board.put(new CoordinateCube(1, 0, -1), new Pawn(Team.BLACK));
-	    board.put(new CoordinateCube(-1, 0, 1), new Pawn(Team.BLACK));
+	    Coordinate w1 = new CoordinateCube(-4, -1, 5);
+	    Coordinate w2 = new CoordinateCube(-3, -2, 5);
+	    Coordinate w3 = new CoordinateCube(-2, -3, 5);
+	    board.put(w1, new Ring(Team.WHITE));
+	    board.put(w2, new Ring(Team.WHITE));
+	    board.put(w3, new Ring(Team.WHITE));
+	    board.put(new CoordinateCube(-4, 0, 4), new Ring(Team.BLACK));
+	    board.put(new CoordinateCube(-3, -1, 4), new Ring(Team.BLACK));
+	    board.put(new CoordinateCube(-2, -2, 4), new Ring(Team.BLACK));
+	    board.put(new CoordinateCube(-1, -3, 4), new Ring(Team.BLACK));
+	    board.put(new CoordinateCube(0, -4, 4), new Ring(Team.BLACK));
 	    State state = new State(board, Team.WHITE, List.of());
 	    assertNull(state.winner());
-	}*/
+	}
 	
 	@Test
 	void testIsInField_true() {
