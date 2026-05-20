@@ -57,6 +57,12 @@ public class ModelTest {
 	    public List<Set<Coordinate>> getPawnsLines() {
 	        return List.of();
 	    }
+
+		@Override
+		public Team winner() {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 
     @Test

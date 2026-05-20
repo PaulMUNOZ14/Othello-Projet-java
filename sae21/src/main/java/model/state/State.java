@@ -49,7 +49,6 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	        } else if (piece == null) {
 	        	new_board.put(coordinate, new Pawn(ring.getTeam()));
 	        }
-	        System.out.println(coordinate);
 	    }
 
 	    new_board.put(move.getFrom(), new Pawn(ring.getTeam()));
@@ -141,7 +140,7 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 				}
 			}
 		}
-	    System.out.println(moves);
+
 	    return moves;
 	}
 
