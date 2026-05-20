@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.management.RuntimeErrorException;
-
 import coordinate.Coordinate;
 import coordinate.DifferentAxisException;
 import coordinate.Direction;
@@ -24,8 +22,8 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 
 	@Override
 	public IState move(Move move) throws DifferentAxisException {
-		if(!board.containsKey(move.getFrom())) throw new RuntimeErrorException(null, "case hors platau");
-		if(!board.containsKey(move.getTo())) throw new RuntimeErrorException(null, "case hors platau");
+		if(!board.containsKey(move.getFrom())) throw new IllegalArgumentException("case hors platau");
+		if(!board.containsKey(move.getTo())) throw new IllegalArgumentException("case hors platau");
 	    Token ring = board.get(move.getFrom());
 	    if (!(ring instanceof Ring)) {
 	        throw new IllegalArgumentException("Pas d'anneau à l'endroit donné");
@@ -76,13 +74,13 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	public IState removeLine(RemoveLine removeLine) {
 
 	    if (removeLine.getLine().size() != 5) {
-	        throw new IllegalArgumentException(
+	        throw new RuntimeException(
 	            "Taille de ligne impossible : " + removeLine.getLine().size()
 	        );
 	    }
 
 	    if (!(board.get(removeLine.getRing()) instanceof Ring)) {
-	        throw new IllegalArgumentException(
+	        throw new RuntimeException(
 	            "La coordonnée spécifiée ne contient pas un anneau"
 	        );
 	    }
@@ -92,13 +90,13 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	    for (Coordinate coo : removeLine.getLine()) {
 
 	        if (!board.containsKey(coo)) {
-	            throw new IllegalArgumentException("Case de la ligne hors plateau");
+	            throw new RuntimeException("Case de la ligne hors plateau");
 	        }
 
 	        Token piece = board.get(coo);
 
 	        if (!(piece instanceof Pawn)) {
-	            throw new IllegalArgumentException(
+	            throw new RuntimeException(
 	                "La ligne ne doit contenir que des pions"
 	            );
 	        }
@@ -106,7 +104,7 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	        if (teamLine == null) {
 	            teamLine = piece.getTeam();
 	        } else if (piece.getTeam() != teamLine) {
-	            throw new IllegalArgumentException(
+	            throw new RuntimeException(
 	                "La ligne contient plusieurs couleurs"
 	            );
 	        }
