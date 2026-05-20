@@ -1,10 +1,11 @@
-package sae21.testStage;
+package sae21.testState;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +23,7 @@ import model.tokens.Pawn;
 import model.tokens.Ring;
 import model.tokens.Token;
 
-class TestStage {
+class TestState {
 	
 	public static Map<Coordinate, Token> genereTab(int n){
 		Map<Coordinate, Token> board = new HashMap<Coordinate, Token>();
@@ -88,4 +89,75 @@ class TestStage {
 		assertTrue(sta.board().get(new CoordinateCube(1, 0, -1)) instanceof Pawn);
 	}
 
+	@Test
+	void testLineOfFive() {
+	    Map<Coordinate, Token> board = new HashMap<>();
+	    Team team = Team.BLACK;
+	    Coordinate c1 = new CoordinateCube(0,0,0);
+	    Coordinate c2 = new CoordinateCube(1,0,-1);
+	    Coordinate c3 = new CoordinateCube(2,0,-2);
+	    Coordinate c4 = new CoordinateCube(3,0,-3);
+	    Coordinate c5 = new CoordinateCube(4,0,-4);
+	    board.put(c1, new Pawn(team));
+	    board.put(c2, new Pawn(team));
+	    board.put(c3, new Pawn(team));
+	    board.put(c4, new Pawn(team));
+	    board.put(c5, new Pawn(team));
+	    State state = new State(board, team, List.of());
+	    List<Set<Coordinate>> lines = state.lines();
+	    assertEquals(1, lines.size());
+	}
+	
+	@Test
+	void testLineOfSix() {
+	    Map<Coordinate, Token> board = new HashMap<>();
+	    Team team = Team.BLACK;
+	    List<Coordinate> coords = List.of(
+	        new CoordinateCube(0,0,0),
+	        new CoordinateCube(1,0,-1),
+	        new CoordinateCube(2,0,-2),
+	        new CoordinateCube(3,0,-3),
+	        new CoordinateCube(4,0,-4),
+	        new CoordinateCube(5,0,-5)
+	    );
+	    for (Coordinate c : coords) {
+	        board.put(c, new Pawn(team));
+	    }
+	    State state = new State(board, team, List.of());
+	    List<Set<Coordinate>> lines = state.lines();
+	    assertEquals(2, lines.size());
+	}
+	
+	@Test
+	void testMixedTeamsNoLine() {
+	    Map<Coordinate, Token> board = new HashMap<>();
+	    board.put(new CoordinateCube(0,0,0), new Pawn(Team.BLACK));
+	    board.put(new CoordinateCube(1,0,-1), new Pawn(Team.WHITE));
+	    board.put(new CoordinateCube(2,0,-2), new Pawn(Team.BLACK));
+	    board.put(new CoordinateCube(3,0,-3), new Pawn(Team.BLACK));
+	    board.put(new CoordinateCube(4,0,-4), new Pawn(Team.BLACK));
+	    State state = new State(board, Team.BLACK, List.of());
+	    List<Set<Coordinate>> lines = state.lines();
+	    assertEquals(0, lines.size());
+	}
+	
+	@Test
+	void testLineContent() {
+	    Map<Coordinate, Token> board = new HashMap<>();
+	    Team team = Team.BLACK;
+	    Coordinate c1 = new CoordinateCube(0,0,0);
+	    Coordinate c2 = new CoordinateCube(1,0,-1);
+	    Coordinate c3 = new CoordinateCube(2,0,-2);
+	    Coordinate c4 = new CoordinateCube(3,0,-3);
+	    Coordinate c5 = new CoordinateCube(4,0,-4);
+	    board.put(c1, new Pawn(team));
+	    board.put(c2, new Pawn(team));
+	    board.put(c3, new Pawn(team));
+	    board.put(c4, new Pawn(team));
+	    board.put(c5, new Pawn(team));
+	    State state = new State(board, team, List.of());
+	    List<Set<Coordinate>> lines = state.lines();
+	    Set<Coordinate> expected = Set.of(c1, c2, c3, c4, c5);
+	    assertTrue(lines.contains(expected));
+	}
 }
