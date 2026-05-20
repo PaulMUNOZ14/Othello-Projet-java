@@ -1,6 +1,8 @@
 package model.state;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -9,6 +11,7 @@ import javax.management.RuntimeErrorException;
 
 import coordinate.Coordinate;
 import coordinate.DifferentAxisException;
+import coordinate.Direction;
 import coordinate.Mode;
 import model.Team;
 import model.action.Move;
@@ -149,9 +152,54 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	}
 
 	@Override
+	//liste finale qui contiendra toutes les lignes de 5 trouvées
 	public List<Set<Coordinate>> getPawnsLines() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Set<Coordinate>> allLines = new ArrayList<>();
+		Direction[] directionsToTest = {Direction.E, Direction.SE, Direction.SO};
+		
+		//boucle sur toutes les coordonnées enregistrées dans notre plateau
+		for (Coordinate startCoord : this.board.keySet()) {
+			Token token = this.board.get(startCoord);
+		
+			//si la case est vide ou si ce n'est pas un Pion (si c'est un Anneau par exemple) alors on ignore
+			if (token == null || !(token instanceof Pawn)) {
+	            continue;
+	        }
+			
+			//Test des 3 directions a partir de ce point de départ 
+			Team currentTeam = token.getTeam();
+			for (Direction dir : directionsToTest) {
+	            Set<Coordinate> currentLine = new HashSet<>();
+	            currentLine.add(startCoord);
+	            Coordinate currentCoord = startCoord;
+	            
+	            for (int i = 0; i < 4; i++) {
+	            	//on avance d'une case dans la direction testée
+	                try {
+	                	//a verifier
+	                	currentCoord = currentCoord.toDir(Mode.POINTY, dir);
+	                	
+	                	Token nextToken = this.board.get(currentCoord);
+
+						//si c'est bien un pion de la même équipe, on l'ajoute à la ligne
+						if (nextToken != null && (nextToken instanceof Pawn) && nextToken.getTeam() == currentTeam) {
+							currentLine.add(currentCoord);
+						} else {
+							break; //la ligne est brisée
+						}
+	                } catch (Exception e) {
+	                	break; //on est sorti des limites du terrain
+	                }
+	            }
+	            
+	            //si on a exactement 5 pions, on sauvegarde cette ligne
+	            if (currentLine.size() == 5) {
+					allLines.add(currentLine);
+				}
+			}
+		}
+		
+		return allLines;
 	}
 	
 	
