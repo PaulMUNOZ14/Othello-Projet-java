@@ -10,7 +10,7 @@ import coordinate.Direction;
 import coordinate.CoordinateCube;
 import coordinate.Coordinate;
 import coordinate.Mode;
-import factory.FactoryCube;
+import model.factory.FactoryCube;
 import ui.CUIMain;
 
 public class MainAI {
