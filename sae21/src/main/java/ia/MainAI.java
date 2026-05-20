@@ -16,8 +16,24 @@ import ui.CUIMain;
 public class MainAI {
 	public static void main(String[] args) {
 		
-		State gameState = (State) new FactoryCube().testState();
-		MinimaxAI ai = new MinimaxAI(3);
+		java.util.Map<coordinate.Coordinate, model.tokens.Token> plateauInitial = model.state.State.genereTab(5);
+		
+		
+		plateauInitial.put(new CoordinateCube(0, 0, 0), new model.tokens.Ring(Team.WHITE));
+		plateauInitial.put(new CoordinateCube(0, 1, -1), new model.tokens.Ring(Team.WHITE));
+		plateauInitial.put(new CoordinateCube(0, 2, -2), new model.tokens.Ring(Team.WHITE));
+		plateauInitial.put(new CoordinateCube(1, 0, -1), new model.tokens.Ring(Team.WHITE));
+		plateauInitial.put(new CoordinateCube(2, 0, -2), new model.tokens.Ring(Team.WHITE));
+		
+		plateauInitial.put(new CoordinateCube(-1, 0, 1), new model.tokens.Ring(Team.BLACK));
+		plateauInitial.put(new CoordinateCube(-2, 0, 2), new model.tokens.Ring(Team.BLACK));
+		plateauInitial.put(new CoordinateCube(0, -1, 1), new model.tokens.Ring(Team.BLACK));
+		plateauInitial.put(new CoordinateCube(0, -2, 2), new model.tokens.Ring(Team.BLACK));
+		plateauInitial.put(new CoordinateCube(1, -1, 0), new model.tokens.Ring(Team.BLACK));
+		
+		State gameState = new State(plateauInitial, Team.WHITE, new java.util.ArrayList<>());
+		
+		MinimaxAI ai = new MinimaxAI(4);
         Scanner scanner = new Scanner(System.in);
         
         boolean gameRunning = true;
@@ -44,7 +60,7 @@ public class MainAI {
         			if (parties.length == 3) {
         				int q = Integer.parseInt(parties[0]);
         				int r = Integer.parseInt(parties[1]);
-        				int s = -q - r; //application contrainte q + r + s = 0
+        				int s = -q - r; // application de la contrainte q + r + s = 0
         				
         				Direction dir = Direction.valueOf(parties[2].toUpperCase());
         				
