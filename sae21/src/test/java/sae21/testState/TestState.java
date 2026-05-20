@@ -162,6 +162,96 @@ class TestState {
 	}
 	
 	@Test
+	void testWinner_none() {
+	    Map<Coordinate, Token> board = new HashMap<>();
+	    List<Coordinate> white = List.of(
+	        new CoordinateCube(0, 0, 0),
+	        new CoordinateCube(1, -1, 0),
+	        new CoordinateCube(2, -2, 0),
+	        new CoordinateCube(3, -3, 0),
+	        new CoordinateCube(4, -4, 0)
+	    );
+	    List<Coordinate> black = List.of(
+	        new CoordinateCube(0, 1, -1),
+	        new CoordinateCube(1, 0, -1),
+	        new CoordinateCube(2, -1, -1),
+	        new CoordinateCube(3, -2, -1),
+	        new CoordinateCube(4, -3, -1)
+	    );
+	    for (Coordinate c : white) {
+	        board.put(c, new Ring(Team.WHITE));
+	    }
+	    for (Coordinate c : black) {
+	        board.put(c, new Ring(Team.BLACK));
+	    }
+	    State state = new State(board, Team.WHITE, List.of());
+	    assertNull(state.winner());
+	}
+	
+	@Test
+	void testWinner_whiteWins() {
+	    Map<Coordinate, Token> board = new HashMap<>();
+	    board.put(new CoordinateCube(0, 0, 0), new Ring(Team.WHITE));
+	    board.put(new CoordinateCube(1, -1, 0), new Ring(Team.WHITE));
+	    board.put(new CoordinateCube(-2, 2, 0), new Ring(Team.BLACK));
+	    board.put(new CoordinateCube(-1, 1, 0), new Ring(Team.BLACK));
+	    board.put(new CoordinateCube(0, 0, 0), new Ring(Team.BLACK));
+	    board.put(new CoordinateCube(1, -1, 0), new Ring(Team.BLACK));
+	    board.put(new CoordinateCube(2, -2, 0), new Ring(Team.BLACK));
+	    State state = new State(board, Team.WHITE, List.of());
+	    assertEquals(Team.WHITE, state.winner());
+	}
+	
+	@Test
+	void testWinner_blackWins() {
+	    Map<Coordinate, Token> board = new HashMap<>();
+	    board.put(new CoordinateCube(0, 1, -1), new Ring(Team.BLACK));
+	    board.put(new CoordinateCube(1, 0, -1), new Ring(Team.BLACK));
+	    board.put(new CoordinateCube(-2, 2, 0), new Ring(Team.WHITE));
+	    board.put(new CoordinateCube(-1, 1, 0), new Ring(Team.WHITE));
+	    board.put(new CoordinateCube(0, 0, 0), new Ring(Team.WHITE));
+	    board.put(new CoordinateCube(1, -1, 0), new Ring(Team.WHITE));
+	    board.put(new CoordinateCube(2, -2, 0), new Ring(Team.WHITE));
+	    State state = new State(board, Team.WHITE, List.of());
+	    assertEquals(Team.BLACK, state.winner());
+	}
+	
+	@Test
+	void testWinner_twoRemoved_noWin() {
+	    Map<Coordinate, Token> board = new HashMap<>();
+	    board.put(new CoordinateCube(0, 0, 0), new Ring(Team.WHITE));
+	    board.put(new CoordinateCube(1, -1, 0), new Ring(Team.WHITE));
+	    board.put(new CoordinateCube(2, -2, 0), new Ring(Team.WHITE));
+	    board.put(new CoordinateCube(-2, 2, 0), new Ring(Team.BLACK));
+	    board.put(new CoordinateCube(-1, 1, 0), new Ring(Team.BLACK));
+	    board.put(new CoordinateCube(0, 1, -1), new Ring(Team.BLACK));
+	    board.put(new CoordinateCube(1, 0, -1), new Ring(Team.BLACK));
+	    board.put(new CoordinateCube(2, -1, -1), new Ring(Team.BLACK));
+	    State state = new State(board, Team.WHITE, List.of());
+	    assertNull(state.winner());
+	}
+	
+	@Test
+	void testWinner_emptyBoard() {
+	    Map<Coordinate, Token> board = new HashMap<>();
+	    State state = new State(board, Team.WHITE, List.of());
+	    assertNull(state.winner());
+	}
+	
+	/*@Test
+	void testWinner_draw_noMoves() {
+	    Map<Coordinate, Token> board = new HashMap<>();
+	    Coordinate white = new CoordinateCube(0, 0, 0);
+	    board.put(white, new Ring(Team.WHITE));
+	    board.put(new CoordinateCube(1, -1, 0), new Ring(Team.BLACK));
+	    board.put(new CoordinateCube(-1, 1, 0), new Ring(Team.BLACK));
+	    board.put(new CoordinateCube(1, 0, -1), new Pawn(Team.BLACK));
+	    board.put(new CoordinateCube(-1, 0, 1), new Pawn(Team.BLACK));
+	    State state = new State(board, Team.WHITE, List.of());
+	    assertNull(state.winner());
+	}*/
+	
+	@Test
 	void testIsInField_true() {
 	    Map<Coordinate, Token> board = new HashMap<>();
 	    Coordinate c1 = new CoordinateCube(0, 0, 0);

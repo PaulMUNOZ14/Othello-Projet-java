@@ -236,8 +236,30 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 
 	@Override
 	public Team winner() {
-		// TODO Auto-generated method stub
-		return null;
+	    Map<Team, List<Coordinate>> r = rings();
+	    int whiteRemaining = r.get(Team.WHITE).size();
+	    int blackRemaining = r.get(Team.BLACK).size();
+	    if (whiteRemaining == 0 && blackRemaining == 0) {
+	        return null;
+	    }
+	    if (5 - whiteRemaining >= 3) {
+	        return Team.WHITE;
+	    }
+	    if (5 - blackRemaining >= 3) {
+	        return Team.BLACK;
+	    }
+	    boolean canPlay = false;
+
+	    for (Coordinate pos : r.get(turn)) {
+	        if (!availableMoves(pos).isEmpty()) {
+	            canPlay = true;
+	            break;
+	        }
+	    }
+	    if (!canPlay) {
+	        return null;
+	    }
+	    return null;
 	}
 	
 	@Override
