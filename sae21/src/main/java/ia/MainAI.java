@@ -28,7 +28,7 @@ public class MainAI {
         System.out.println("Tapez 'exit' pour quitter\n");
         
         while (gameRunning && gameState != null && gameState.winner() == null) {
-        	CUIMain.afficherPlateau(gameState);
+        	CUIMain.afficherPlateauDynamique(gameState.board(), Mode.POINTY);
         	if (currentTurn == Team.WHITE) {
         		System.out.println("\nC'est à votre tour (blancs), veuillez entrer votre coup > ");
         		String coup = scanner.nextLine();
