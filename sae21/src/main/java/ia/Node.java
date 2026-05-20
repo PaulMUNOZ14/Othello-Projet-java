@@ -31,7 +31,7 @@ public class Node {
 		return action;
 	}
 	
-	/*
+	/**
 	 * Vérifie si le noeud est une racine ou non
 	 * @return boolean, vrai si c'est une racine, faux sinon.
 	 */
