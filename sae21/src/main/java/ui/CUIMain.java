@@ -131,7 +131,7 @@ public class CUIMain {
                         // Calcul de la destination pas à pas
                         Coordinate coordArrivee = coordDepart;
                         for (int k = 0; k < distance; k++) {
-                            coordArrivee = coordArrivee.toDir(Mode.POINTY, dir);
+                            coordArrivee = coordArrivee.toDir(modeActuel, dir);
                         }
                         
                         // Envoi de l'action de déplacement à ton Record State
