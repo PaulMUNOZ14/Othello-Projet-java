@@ -24,7 +24,7 @@ public class FactoryCube implements IFactory {
     }
 
     public Map<Coordinate, Token> buildBaseBoard() {
-    	int n = 10;
+    	int n = 10; 
     	Map<Coordinate, Token> board = new HashMap<Coordinate, Token>();
 		for (int i = -n; i <= n; i++) {
 			for (int j = -n; j <= n; j++) {
