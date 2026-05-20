@@ -88,7 +88,7 @@ class TestState {
 		IState sta = state.move(new Move(new CoordinateCube(0, 0, 0), new CoordinateCube(2, 0, -2)));
 		assertTrue(sta.board().get(new CoordinateCube(1, 0, -1)) instanceof Pawn);
 	}
-
+	
 	@Test
 	void testLineOfFive() {
 	    Map<Coordinate, Token> board = new HashMap<>();
@@ -159,5 +159,97 @@ class TestState {
 	    List<Set<Coordinate>> lines = state.lines();
 	    Set<Coordinate> expected = Set.of(c1, c2, c3, c4, c5);
 	    assertTrue(lines.contains(expected));
+	}
+	
+	@Test
+	void testIsInField_true() {
+	    Map<Coordinate, Token> board = new HashMap<>();
+	    Coordinate c1 = new CoordinateCube(0, 0, 0);
+	    board.put(c1, new Pawn(Team.BLACK));
+	    State state = new State(board, Team.BLACK, List.of());
+	    assertTrue(state.isInField(c1));
+	}
+	
+	@Test
+	void testIsInField_false() {
+
+	    Map<Coordinate, Token> board = new HashMap<>();
+
+	    Coordinate c1 = new CoordinateCube(0, 0, 0);
+
+	    State state = new State(board, Team.BLACK, List.of());
+
+	    assertFalse(state.isInField(c1));
+	}
+	
+	@Test
+	void testIsInField_null() {
+
+	    State state = new State(new HashMap<>(), Team.BLACK, List.of());
+
+	    assertFalse(state.isInField(null));
+	}
+	
+	@Test
+	void testHashCode_consistency() {
+	    Map<Coordinate, Token> board = new HashMap<>();
+	    board.put(new CoordinateCube(0,0,0), new Pawn(Team.BLACK));
+	    State s1 = new State(board, Team.BLACK, List.of());
+	    State s2 = new State(new HashMap<>(board), Team.BLACK, List.of());
+	    assertEquals(s1, s2);
+	    assertEquals(s1.hashCode(), s2.hashCode());
+	}
+	
+	@Test
+	void testHashCode_differentStates() {
+	    Map<Coordinate, Token> board1 = new HashMap<>();
+	    board1.put(new CoordinateCube(0,0,0), new Pawn(Team.BLACK));
+	    Map<Coordinate, Token> board2 = new HashMap<>();
+	    board2.put(new CoordinateCube(1,0,-1), new Pawn(Team.BLACK));
+	    State s1 = new State(board1, Team.BLACK, List.of());
+	    State s2 = new State(board2, Team.BLACK, List.of());
+	    assertNotEquals(s1.hashCode(), s2.hashCode());
+	}
+	
+	@Test
+	void testHashCode_differentStates2() {
+	    Map<Coordinate, Token> board1 = new HashMap<>();
+	    board1.put(new CoordinateCube(0,0,0), new Pawn(Team.BLACK));
+	    Map<Coordinate, Token> board2 = new HashMap<>();
+	    board2.put(new CoordinateCube(1,0,-1), new Pawn(Team.BLACK));
+	    State s1 = new State(board1, Team.BLACK, List.of());
+	    State s2 = new State(board2, Team.BLACK, List.of());
+	    assertNotEquals(s1.hashCode(), s2.hashCode());
+	}
+	
+	@Test
+	void testEquals_true() {
+	    Map<Coordinate, Token> board = new HashMap<>();
+	    Coordinate c1 = new CoordinateCube(0, 0, 0);
+	    board.put(c1, new Pawn(Team.BLACK));
+	    List<Set<Coordinate>> lines = List.of();
+	    State s1 = new State(board, Team.BLACK, lines);
+	    State s2 = new State(new HashMap<>(board), Team.BLACK, lines);
+	    assertEquals(s1, s2);
+	}
+	
+	@Test
+	void testEquals_false_board() {
+	    Map<Coordinate, Token> board1 = new HashMap<>();
+	    board1.put(new CoordinateCube(0,0,0), new Pawn(Team.BLACK));
+	    Map<Coordinate, Token> board2 = new HashMap<>();
+	    board2.put(new CoordinateCube(1,0,-1), new Pawn(Team.BLACK));
+	    State s1 = new State(board1, Team.BLACK, List.of());
+	    State s2 = new State(board2, Team.BLACK, List.of());
+	    assertNotEquals(s1, s2);
+	}
+	
+	@Test
+	void testEquals_false_turn() {
+	    Map<Coordinate, Token> board = new HashMap<>();
+	    board.put(new CoordinateCube(0,0,0), new Pawn(Team.BLACK));
+	    State s1 = new State(board, Team.BLACK, List.of());
+	    State s2 = new State(board, Team.WHITE, List.of());
+	    assertNotEquals(s1, s2);
 	}
 }
