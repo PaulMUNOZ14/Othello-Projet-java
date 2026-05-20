@@ -96,6 +96,11 @@ public class MinimaxAI implements AI {
 		}
 	}
 	
+	/**
+	 * Fonction qui te donne une liste des actions possibles
+	 * @param state l'état actuel du jeu
+	 * @return liste des actions possibles
+	 */
 	public List<Action> possibleActions(IState state){
 		
 		List<Action> actions = new ArrayList<>();
@@ -132,6 +137,12 @@ public class MinimaxAI implements AI {
 		
 	}
 	
+	/**
+	 * Fonction qui applique une action donnée
+	 * @param state l'état actuel du jeu
+	 * @param action l'action que l'on souhaite réaliser
+	 * @return l'execution de state.move ou state.removeline
+	 */
 	public IState applyAction(IState state, Action action) {
 		try {
 			if (action instanceof Move) {
