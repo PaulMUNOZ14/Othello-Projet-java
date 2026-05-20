@@ -2,6 +2,9 @@ package factory;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
+
+import model.factory.FactoryDoubled;
+import model.factory.IFactory;
 import model.state.IState;
 
 public class FactoryDoubleTest {

@@ -15,7 +15,7 @@ public class CoordinateDoubledTest {
 	@Test
 	void testTo2DCoordinate() {
 		CoordinateDoubled coord = new CoordinateDoubled(9, 5);
-		Point p = coord.to2DCoordinate();
+		Point p = coord.to2DCoordinate(Mode.POINTY);
 		assertEquals(5, p.x(), "La colonne x devrait être 5");
 		assertEquals(9, p.y(), "La ligne y devrait être 9");
 	}
@@ -25,7 +25,7 @@ public class CoordinateDoubledTest {
 		CoordinateDoubled center = new CoordinateDoubled(9, 5);
 		CoordinateDoubled e = (CoordinateDoubled) center.E(Mode.POINTY);
 		
-		Point p = e.to2DCoordinate();
+		Point p = e.to2DCoordinate(Mode.POINTY);
 		assertEquals(7, p.x());
 		assertEquals(9, p.y());
 	}
@@ -46,8 +46,8 @@ public class CoordinateDoubledTest {
 		assertEquals(2, path.size());
 		
 		CoordinateDoubled firstStep = (CoordinateDoubled) path.get(0);
-		assertEquals(7, firstStep.to2DCoordinate().x());
-		assertEquals(9, firstStep.to2DCoordinate().y());
+		assertEquals(7, firstStep.to2DCoordinate(Mode.POINTY).x());
+		assertEquals(9, firstStep.to2DCoordinate(Mode.POINTY).y());
 	}
 	
 	@Test

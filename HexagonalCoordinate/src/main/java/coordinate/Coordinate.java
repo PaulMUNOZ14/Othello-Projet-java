@@ -12,7 +12,7 @@ public abstract class Coordinate {
 	}
 	
 
-    public abstract Point to2DCoordinate();
+    public abstract Point to2DCoordinate(Mode mode);
     public abstract Coordinate toDir(Mode mode, Direction direction);
     public abstract List<Coordinate> between(Mode mode, Coordinate to) throws DifferentAxisException;
     

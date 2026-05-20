@@ -1,4 +1,4 @@
-package factory;
+package model.factory;
 
 import coordinate.Coordinate;
 import coordinate.CoordinateDoubled;

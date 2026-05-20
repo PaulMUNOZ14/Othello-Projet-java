@@ -1,4 +1,4 @@
-package factory;
+package model.factory;
 
 import model.state.IState;
 
