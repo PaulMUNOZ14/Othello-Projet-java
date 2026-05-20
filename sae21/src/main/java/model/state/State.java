@@ -24,6 +24,7 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 
 	@Override
 	public IState move(Move move) throws DifferentAxisException {
+		if (!lines.isEmpty())throw new RuntimeException("Une ligne doit être supprimée avant de jouer");
 		if(!board.containsKey(move.getFrom())) throw new IndexOutOfBoundsException("case hors platau");
 		if(!board.containsKey(move.getTo())) throw new IndexOutOfBoundsException("case hors platau");
 	    Token ring = board.get(move.getFrom());
@@ -324,24 +325,39 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	 * @throws RuntimeException Si la génération de l'instance par réflexion échoue.
 	 */
 	
-	public State toggleToken(Coordinate coordinate, Class<? extends Token> tokenClass, Team team) {
+	@Override
+	public IState toggleToken(Coordinate coordinate,Class<?> tokenClass,Team team) {
 	    try {
-	        java.lang.reflect.Constructor<?> constructor = tokenClass.getConstructors()[0];
+
+	        java.lang.reflect.Constructor<?> constructor =
+	                tokenClass.getConstructors()[0];
+
 	        Token newToken = (Token) constructor.newInstance(team);
-	        
-	        Map<Coordinate, Token> new_board = new HashMap<>(this.board);
+
+	        Map<Coordinate, Token> new_board =
+	                new HashMap<>(this.board);
+
 	        Token existingToken = new_board.get(coordinate);
-	        
-	        if (existingToken != null && existingToken.getClass().equals(tokenClass) && existingToken.getTeam() == team) {
+
+	        if (existingToken != null
+	                && existingToken.getClass().equals(tokenClass)
+	                && existingToken.getTeam() == team) {
+
 	            new_board.remove(coordinate);
+
 	        } else {
+
 	            new_board.put(coordinate, newToken);
 	        }
-	        
+
 	        return new State(new_board, this.turn, this.lines);
-	        
+
 	    } catch (Exception e) {
-	        throw new RuntimeException("Erreur lors de la création du token par réflexion", e);
+
+	        throw new RuntimeException(
+	                "Erreur lors de la création du token",
+	                e
+	        );
 	    }
 	}
 	
