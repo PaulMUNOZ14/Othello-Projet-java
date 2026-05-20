@@ -21,7 +21,11 @@ import model.tokens.*;
 
 public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate>> lines) implements IState{
 	
-
+	/**
+	 * Fonctin qui sert à déplacer un pion
+	 * @param move mouvement à faire
+	 * @return l'état du jeu
+	 */
 	@Override
 	public IState move(Move move) throws DifferentAxisException {
 		if (!lines.isEmpty())throw new RuntimeException("Une ligne doit être supprimée avant de jouer");
@@ -61,6 +65,11 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	    return new State(new_board, nextTurn, lines);
 	}
 
+	/**
+	 * Remove la ligne donnée
+	 * @param removeLine la ligne à retirer
+	 * @return l'état du jeu
+	 */
 	@Override
 	public IState removeLine(RemoveLine removeLine) {
 
@@ -112,6 +121,11 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	    return new State(new_board, turn, lines);
 	}
 
+	/**
+	 * Fonction qui donne les diffénts mouvements possibles
+	 * @param from les coordonnées de l'anneau
+	 * @return les différents mouvements possibles
+	 */
 	@Override
 	public Set<Coordinate> availableMoves(Coordinate from) {
 	    ArrayList<Direction> dir = new ArrayList<Direction>();
@@ -145,11 +159,19 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	    return moves;
 	}
 
+	/**
+	 * Fonction qui renvoie le board du state
+	 * @return le board
+	 */
 	@Override
 	public Map<Coordinate, Token> board() {
 		return board;
 	}
 
+	/**
+	 * Fonction qui sert à donner les anneaux du board
+	 * @return la liste des anneaux du board
+	 */
 	@Override
 	public Map<Team, List<Coordinate>> rings() {
 		Map<Team, List<Coordinate>> anneaux = new HashMap<Team, List<Coordinate>>();
@@ -163,6 +185,10 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 		return anneaux;
 	}
 
+	/**
+	 * Fonction qui sert à donner les lignes du board
+	 * @return les lignes du board
+	 */
 	@Override
 	public List<Set<Coordinate>> lines() {
 	    List<Set<Coordinate>> result = new ArrayList<>();
@@ -211,11 +237,19 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	    return result;
 	}
 
+	/**
+	 * Fonction qui donne le tour du joueur
+	 * @return le tour du joueur
+	 */
 	@Override
 	public Team turn() {
 		return turn;
 	}
 
+	/**
+	 * Fonction qui dit qui a gagné la partie
+	 * @return le gagnant de la partie
+	 */
 	@Override
 	public Team winner() {
 	    Map<Team, List<Coordinate>> r = rings();
@@ -244,6 +278,10 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	    return null;
 	}
 	
+	/**
+	 * Fonction qui donne les lignes de pions
+	 * @return les lignes de pions
+	 */
 	@Override
 	public List<Set<Coordinate>> getPawnsLines() {
 		List<Set<Coordinate>> allLines = new ArrayList<>();
@@ -352,18 +390,31 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	    return new State(new_board, this.turn, this.lines);
 	}
 
-	
+	/**
+	 * Fonction qui dit si une coordonnée est dans le champ
+	 * @param c les coordonnées
+	 * @return vrai ou faux
+	 */
 	public boolean isInField(Coordinate c) {
 	    if (c == null) return false;
 	    if (board == null) return false;
 	    return board.containsKey(c);
 	}
 
+	/**
+	 * Hashcode
+	 * @return le hash code
+	 */
 	@Override
 	public int hashCode() {
 		return Objects.hash(board, lines, turn);
 	}
 
+	/**
+	 * Fonction equals
+	 * @param obj objet à comparer
+	 * @return vrai ou faux
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
