@@ -14,6 +14,10 @@ import model.factory.FactoryCube;
 import ui.CUIMain;
 
 public class MainAI {
+	/**
+	 * Fonction principale pour utiliser l'IA
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		
 		State gameState = (State) new FactoryCube().testState();
