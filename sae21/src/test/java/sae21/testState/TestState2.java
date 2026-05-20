@@ -20,6 +20,7 @@ import coordinate.Mode;
 import coordinate.Point;
 import model.Team;
 import model.action.Move;
+import model.factory.FactoryDoubled;
 import model.state.IState;
 import model.state.State;
 import model.tokens.Pawn;
@@ -29,12 +30,12 @@ import model.tokens.Token;
 class TestState2 {
 		
 	private Map<Coordinate, Token> board;
-    private int n = 5; // Taille standard du plateau YINSH
+    private int n = 5; 
 
     @BeforeEach
     public void setUp() {
-        // Initialisation d'un plateau vide avant chaque test
-        board = State.genereTab(n); 
+        FactoryDoubled facto = new FactoryDoubled();
+        board = facto.buildBaseBoard(); 
     }
 
     @Test

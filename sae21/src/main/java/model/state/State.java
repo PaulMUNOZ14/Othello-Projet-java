@@ -325,31 +325,33 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	 * @throws RuntimeException Si la génération de l'instance par réflexion échoue.
 	 */
 	
-	public State toggleToken(Coordinate coordinate, Class<? extends Token> tokenClass, Team team) {
-	    if (!this.board.containsKey(coordinate)) {
+	public IState toggleToken(Coordinate position, Class<?> token, Team team) {
+	    if (!this.board.containsKey(position)) {
 	        throw new IllegalArgumentException("La coordonnée spécifiée est hors plateau");
 	    }
 
 	    Map<Coordinate, Token> new_board = new HashMap<>(this.board);
-	    Token existingToken = new_board.get(coordinate);
+	    Token existingToken = new_board.get(position);
 
 	    Token newToken;
-	    if (tokenClass.equals(Pawn.class)) {
+	    if (token.equals(Pawn.class)) {
 	        newToken = new Pawn(team);
-	    } else if (tokenClass.equals(Ring.class)) {
+	    } else if (token.equals(Ring.class)) {
 	        newToken = new Ring(team);
 	    } else {
-	        throw new IllegalArgumentException("Type de token non supporté : " + tokenClass.getSimpleName());
+	        throw new IllegalArgumentException("Type de token non supporté : " + token.getSimpleName());
 	    }
 
-	    if (existingToken != null && existingToken.getClass().equals(tokenClass) && existingToken.getTeam() == team) {
-	        new_board.put(coordinate, null);
+	    // CORRECTION ICI : Remplacement de 'token' par 'position' comme clé de la Map
+	    if (existingToken != null && existingToken.getClass().equals(token) && existingToken.getTeam() == team) {
+	        new_board.put(position, null); // On retire le jeton en remettant la case à null
 	    } else {
-	        new_board.put(coordinate, newToken);
+	        new_board.put(position, newToken); // On place ou remplace par le nouveau jeton
 	    }
 
 	    return new State(new_board, this.turn, this.lines);
 	}
+
 	
 	public boolean isInField(Coordinate c) {
 	    if (c == null) return false;
