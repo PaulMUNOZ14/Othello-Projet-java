@@ -18,11 +18,18 @@ import java.util.Map;
  */
 public class FactoryCube implements IFactory {
 
+	/**
+	 * Fonction qui génère un state vide
+	 */
     @Override
     public IState emptyState() {
         return new State(buildBaseBoard(), Team.WHITE, List.of());
     }
 
+    /**
+     * Fonction qui génère un board
+     * @return le board généré
+     */
     public Map<Coordinate, Token> buildBaseBoard() {
     	int n = 10;
     	Map<Coordinate, Token> board = new HashMap<Coordinate, Token>();
@@ -36,6 +43,9 @@ public class FactoryCube implements IFactory {
 		return board;
     }
 
+    /**
+     * Fonction qui renvoie un state pour un test de ligne blanche
+     */
     @Override
     public IState stateForWhiteLineTest() {
     	IState s = new State(buildBaseBoard(), Team.WHITE, List.of());
@@ -49,6 +59,9 @@ public class FactoryCube implements IFactory {
         return s;
     }
 
+    /**
+     * Fonction qui renvoie un state pour un test de ligne noir
+     */
     @Override
     public IState stateForBlackLineTest() {
     	IState s = new State(buildBaseBoard(), Team.BLACK, List.of());
@@ -62,6 +75,9 @@ public class FactoryCube implements IFactory {
         return s;
     }
 
+    /**
+     * Fonction qui sert à faire un test de state
+     */
     @Override
     public IState testState() {
     	IState s = new State(buildBaseBoard(), Team.WHITE, List.of());
@@ -72,6 +88,9 @@ public class FactoryCube implements IFactory {
         return s;
     }
 
+    /**
+     * Fonction qui sert à faire un test de state
+     */
     @Override
     public IState doubleLineStateTest() {
     	IState s = new State(buildBaseBoard(), Team.WHITE, List.of());
