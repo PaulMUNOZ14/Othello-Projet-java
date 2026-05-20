@@ -107,6 +107,28 @@ public class CoordinateCube extends Coordinate {
 		
 		return result;
 	}
+	
+	
+	/**
+     * Vérifie si deux coordonnées cubiques sont identiques
+     * @param obj L'objet à comparer
+     * @return true si les objets ont les mêmes coordonnées, false sinon
+     */
+	@Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        CoordinateCube that = (CoordinateCube) obj;
+        return q == that.q && r == that.r && s == that.s;
+    }
+	/**
+     * Génère un code de hachage unique pour la coordonnée
+     * @return Le code de hachage calculé à partir de q, r et s
+     */
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(q, r, s);
+    }
 
 	@Override
 	public int hashCode() {

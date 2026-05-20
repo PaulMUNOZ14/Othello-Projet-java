@@ -174,9 +174,106 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	}
 
 	@Override
+	//liste finale qui contiendra toutes les lignes de 5 trouvées
 	public List<Set<Coordinate>> getPawnsLines() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Set<Coordinate>> allLines = new ArrayList<>();
+		Direction[] directionsToTest = {Direction.E, Direction.SE, Direction.SO};
+		
+		//boucle sur toutes les coordonnées enregistrées dans notre plateau
+		for (Coordinate startCoord : this.board.keySet()) {
+			Token token = this.board.get(startCoord);
+		
+			//si la case est vide ou si ce n'est pas un Pion (si c'est un Anneau par exemple) alors on ignore
+			if (token == null || !(token instanceof Pawn)) {
+	            continue;
+	        }
+			
+			//Test des 3 directions a partir de ce point de départ 
+			Team currentTeam = token.getTeam();
+			for (Direction dir : directionsToTest) {
+	            Set<Coordinate> currentLine = new HashSet<>();
+	            currentLine.add(startCoord);
+	            Coordinate currentCoord = startCoord;
+	            
+	            for (int i = 0; i < 4; i++) {
+	            	//on avance d'une case dans la direction testée
+	                try {
+	                	//a verifier
+	                	currentCoord = currentCoord.toDir(Mode.POINTY, dir);
+	                	
+	                	Token nextToken = this.board.get(currentCoord);
+
+						//si c'est bien un pion de la même équipe, on l'ajoute à la ligne
+						if (nextToken != null && (nextToken instanceof Pawn) && nextToken.getTeam() == currentTeam) {
+							currentLine.add(currentCoord);
+						} else {
+							break; //la ligne est brisée
+						}
+	                } catch (Exception e) {
+	                	break; //on est sorti des limites du terrain
+	                }
+	            }
+	            
+	            //si on a exactement 5 pions, on sauvegarde cette ligne
+	            if (currentLine.size() == 5) {
+					allLines.add(currentLine);
+				}
+			}
+		}
+		
+		return allLines;
+	}
+	
+	
+	
+	
+	
+	/**
+	 * RemoveToken
+	 * Crée un nouvel état en supprimant le jeton situé à la coordonnée indiquée.
+	 * Respecte l'immuabilité en clonant le plateau avant d'effectuer la suppression.
+	 * * @param coordinate La coordonnée de la case à vider.
+	 * @return Une nouvelle instance de State avec le plateau mis à jour.
+	 */
+	public State removeToken(Coordinate coordinate) {
+	    Map<Coordinate, Token> new_board = new HashMap<>(this.board);
+	    new_board.remove(coordinate);
+	    return new State(new_board, this.turn, this.lines);
+	}
+	
+	
+	
+	/**
+	 * ToggleToken
+	 * Ajoute ou supprime dynamiquement un jeton sur le plateau via la réflexion Java.
+	 * Si un jeton de la même classe et de la même équipe est déjà présent sur la case, il est retiré.
+	 * Sinon, un nouveau jeton est instancié à la volée et placé sur le plateau.
+	 * * @param coordinate La coordonnée cible sur le plateau.
+	 * @param tokenClass La classe du jeton à créer (ex: Pawn.class ou Ring.class).
+	 * @param team L'équipe (Team) à assigner au jeton.
+	 * @return Une nouvelle instance de State avec le plateau mis à jour.
+	 * @throws RuntimeException Si la génération de l'instance par réflexion échoue.
+	 */
+	
+	public State toggleToken(Coordinate coordinate, Class<? extends Token> tokenClass, Team team) {
+	    try {
+	        java.lang.reflect.Constructor<?> constructor = tokenClass.getConstructors()[0];
+	        Token newToken = (Token) constructor.newInstance(team);
+	        
+	        Map<Coordinate, Token> new_board = new HashMap<>(this.board);
+	        Token existingToken = new_board.get(coordinate);
+	        
+	        if (existingToken != null && existingToken.getClass().equals(tokenClass) && existingToken.getTeam() == team) {
+	            new_board.remove(coordinate);
+	        } else {
+	            new_board.put(coordinate, newToken);
+	        }
+	        
+	        return new State(new_board, this.turn, this.lines);
+	        
+	    } catch (Exception e) {
+	        throw new RuntimeException("Erreur lors de la création du token par réflexion", e);
+	    }
 	}
 	
 	public static Map<Coordinate, Token> genereTab(int n){
