@@ -43,10 +43,16 @@ public class CoordinateCube extends Coordinate {
      * @return Les points en 2D
      */
 	@Override
-	public Point to2DCoordinate() {
-		int x = 2 * q + r + 9;
-		int y = r + 5;
-		return new Point(x, y);
+	public Point to2DCoordinate(Mode mode) {
+		if (mode == Mode.POINTY) {
+	        int x = q + (r + (r & 1)) / 2;
+	        int y = r;
+	        return new Point(x, y);
+	    } else {
+	        int x = q;
+	        int y = r + (q + (q & 1)) / 2;
+	        return new Point(x, y);
+	    }
 	}
 
 	/**

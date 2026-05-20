@@ -24,7 +24,7 @@ public class CoordinateDoubled extends Coordinate {
      * @return Les points en 2D
      */
 	@Override
-	public Point to2DCoordinate() {
+	public Point to2DCoordinate(Mode mode) {
 		return new Point(x, y);
 	}
 
