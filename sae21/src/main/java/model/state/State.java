@@ -36,21 +36,7 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	    List<Coordinate> entre = move.getFrom().between(Mode.POINTY, move.getTo());
 	    
 
-	    boolean aRencontreVide = false;
-	    
-	    for (Coordinate coordinate : entre) {
-	        Token piece = board.get(coordinate);
-	        
-	        if (piece instanceof Ring) {
-	            throw new IllegalArgumentException("Impossible de sauter un anneau");
-	        }
-	        
-	        if (piece == null) {
-	            aRencontreVide = true;
-	        } else if (piece instanceof Pawn && aRencontreVide) {
-	            throw new IllegalArgumentException("Impossible de sauter par-dessus du vide puis un pion");
-	        }
-	    }
+	    if (! availableMoves(move.getFrom()).contains(move.getTo())) throw new IllegalArgumentException("coup impossible");
 
 	    Map<Coordinate, Token> new_board = new HashMap<>(board);
 	    
@@ -58,7 +44,10 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 	        Token piece = board.get(coordinate);
 	        if (piece instanceof Pawn) {
 	            new_board.put(coordinate, new Pawn(piece.getTeam().other()));
+	        } else if (piece == null) {
+	        	new_board.put(coordinate, new Pawn(ring.getTeam()));
 	        }
+	        System.out.println(coordinate);
 	    }
 
 	    new_board.put(move.getFrom(), new Pawn(ring.getTeam()));
@@ -123,31 +112,22 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 
 	@Override
 	public Set<Coordinate> availableMoves(Coordinate from) {
-	    Map<Mode, ArrayList<Direction>> dir = new HashMap<Mode, ArrayList<Direction>>();
-	    Mode mode = Mode.POINTY;
-	    dir.put(Mode.FLAT, new ArrayList<Direction>());
-	    dir.put(Mode.POINTY, new ArrayList<Direction>());
-	    dir.get(Mode.POINTY).add(Direction.NE);
-	    dir.get(Mode.POINTY).add(Direction.NO);
-	    dir.get(Mode.POINTY).add(Direction.SE);
-	    dir.get(Mode.POINTY).add(Direction.SO);
-	    dir.get(Mode.POINTY).add(Direction.E);
-	    dir.get(Mode.POINTY).add(Direction.O);
-	    dir.get(Mode.FLAT).add(Direction.NE);
-	    dir.get(Mode.FLAT).add(Direction.NO);
-	    dir.get(Mode.FLAT).add(Direction.SE);
-	    dir.get(Mode.FLAT).add(Direction.SO);
-	    dir.get(Mode.FLAT).add(Direction.N);
-	    dir.get(Mode.FLAT).add(Direction.S);
+	    ArrayList<Direction> dir = new ArrayList<Direction>();
+	    dir.add(Direction.NE);
+	    dir.add(Direction.NO);
+	    dir.add(Direction.SE);
+	    dir.add(Direction.SO);
+	    dir.add(Direction.E);
+	    dir.add(Direction.O);
 	    Set<Coordinate> moves = new HashSet<Coordinate>();
-	    for (Direction direction : dir.get(mode)) {
+	    for (Direction direction : dir) {
 			boolean continu = true;
 			boolean pawn_encountered = false;
 			Coordinate position = from;
 			
 			
-			while(continu && board.containsKey(position.toDir(mode, direction))) {
-				position = from.toDir(mode, direction);
+			while(continu && board.containsKey(position.toDir(Mode.POINTY, direction))) {
+				position = position.toDir(Mode.POINTY, direction);
 				if(board.get(position) == null) {
 					moves.add(position);
 					if (pawn_encountered) continu = false;
@@ -159,6 +139,7 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 				}
 			}
 		}
+	    System.out.println(moves);
 	    return moves;
 	}
 
