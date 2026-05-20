@@ -13,12 +13,6 @@ import java.util.Set;
 import coordinate.Coordinate;
 
 public class MinimaxAI implements AI {
-
-	@Override
-	public Action chooseMove(IState state) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 	private final int maxDepth;
 	
