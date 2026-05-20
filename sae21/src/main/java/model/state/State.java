@@ -398,3 +398,4 @@ public record State(Map<Coordinate, Token> board, Team turn, List<Set<Coordinate
 
 	
 }
+
