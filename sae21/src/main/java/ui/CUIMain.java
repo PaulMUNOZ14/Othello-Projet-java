@@ -2,50 +2,32 @@ package ui;
 
 import java.util.Scanner;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Collections;
 
 import model.Team;
-import model.state.State;
+import model.state.IState;
 import model.action.Move;
 import model.tokens.Token;
 import model.tokens.Pawn;
 import model.tokens.Ring;
 import coordinate.*;
 
+// Imports de la factory
+import model.factory.IFactory;
+import model.factory.FactoryCube; // Ou votre implémentation concrète de IFactory
+
 public class CUIMain {
     
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         
-        // 1. Génération de la géométrie complète du plateau YINSH (taille 5)
-        Map<Coordinate, Token> plateauInitial = State.genereTab(5);
+        // 1. Initialisation via la Factory
+        // On utilise l'implémentation FactoryCube pour instancier notre fabrique de jeu
+        IFactory factory = new FactoryCube();
         
-        // Extraction et mélange des coordonnées pour placer les anneaux aléatoirement
-        List<Coordinate> casesValides = new ArrayList<>(plateauInitial.keySet());
-        Collections.shuffle(casesValides);
-        
-        // 2. Placement initial des 5 anneaux BLANCS et 5 anneaux NOIRS
-        int anneauxBlancs = 0;
-        int anneauxNoirs = 0;
-        int indexCase = 0;
-        
-        while (anneauxBlancs < 5 || anneauxNoirs < 5) {
-            Coordinate caseCible = casesValides.get(indexCase++);
-            
-            if (anneauxBlancs < 5) {
-                plateauInitial.put(caseCible, new Ring(Team.WHITE));
-                anneauxBlancs++;
-            } else if (anneauxNoirs < 5) {
-                plateauInitial.put(caseCible, new Ring(Team.BLACK));
-                anneauxNoirs++;
-            }
-        }
-        
-        // 3. Création de l'état initial (WHITE commence)
-        State state = new State(plateauInitial, Team.WHITE, new ArrayList<>());
+        // On récupère un état de jeu initialisé pour les tests/la partie
+        // Note : Si vous préférez un plateau vide, utilisez factory.emptyState()
+        IState state = factory.testState(); 
         
         Mode modeActuel = Mode.FLAT;
         boolean modeChoisi = false;
@@ -73,7 +55,7 @@ public class CUIMain {
         System.out.println("Tapez 'exit' pour quitter.\n");
 
         while (gameRunning) {
-            // Affichage graphique du plateau
+            // Affichage graphique du plateau en utilisant l'état (state.board())
             afficherPlateauDynamique(state.board(), modeActuel);
             
             Team tourActuel = state.turn();
@@ -131,12 +113,12 @@ public class CUIMain {
                         // Calcul de la destination pas à pas
                         Coordinate coordArrivee = coordDepart;
                         for (int k = 0; k < distance; k++) {
-                            coordArrivee = coordArrivee.toDir(Mode.POINTY, dir);
+                            coordArrivee = coordArrivee.toDir(modeActuel, dir);
                         }
                         
-                        // Envoi de l'action de déplacement à ton Record State
+                        // Envoi de l'action de déplacement à l'état
                         Move moveAction = new Move(coordDepart, coordArrivee);
-                        state = (State) state.move(moveAction);
+                        state = state.move(moveAction);
                         
                         System.out.println("\n[OK] Déplacement de l'anneau n°" + (numAnneau + 1) + " réussi !\n");
                         

@@ -14,15 +14,42 @@ public class TestPawn {
         Pawn p = new Pawn(Team.WHITE);
         assertEquals(Team.WHITE, p.getTeam());
     }
+
     @Test
     void testChangeTeamDoesNotCrash() {
         Pawn p = new Pawn(Team.WHITE);
-        assertDoesNotThrow(() -> p.changeTeam());
+        assertDoesNotThrow(p::changeTeam);
     }
+
     @Test
-    void testChangeTeam() {
+    void testChangeTeamWhiteToBlack() {
         Pawn p = new Pawn(Team.WHITE);
         p.changeTeam();
         assertEquals(Team.BLACK, p.getTeam());
+    }
+
+    @Test
+    void testChangeTeamBlackToWhite() {
+        Pawn p = new Pawn(Team.BLACK);
+        p.changeTeam();
+        assertEquals(Team.WHITE, p.getTeam());
+    }
+
+    @Test
+    void testCloneCreatesNewInstance() {
+        Pawn p1 = new Pawn(Team.WHITE);
+        Pawn p2 = (Pawn) p1.clone();
+
+        assertNotSame(p1, p2);
+        assertEquals(p1.getTeam(), p2.getTeam());
+    }
+
+    @Test
+    void testCharRepr() {
+        Pawn p1 = new Pawn(Team.WHITE);
+        Pawn p2 = new Pawn(Team.BLACK);
+
+        assertEquals("P", p1.charRepr());
+        assertEquals("P", p2.charRepr());
     }
 }
